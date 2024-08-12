@@ -1,3 +1,5 @@
+import { ObjectId } from "mongoose";
+
 export interface TSong {
   songName: string;
   songArtist: string;
@@ -6,4 +8,5 @@ export interface TSong {
   songDuration: string;
   releaseYear: number;
   genre: string;
+  albumId:ObjectId;
 }

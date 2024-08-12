@@ -31,6 +31,11 @@ const songSchema = new Schema<TSong>({
     type: String,
     required: [true, "song link is required"],
   },
+  albumId: {
+    type: Schema.Types.ObjectId,
+    ref:"Album",
+    required: [true, "albumId is required"],
+  },
 });
 
 // Create the model
