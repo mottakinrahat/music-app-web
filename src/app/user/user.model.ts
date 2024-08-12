@@ -20,7 +20,7 @@ const userSchema = new Schema<TUser, TUserModel>(
       required: true,
     },
     contactNo: {
-      type: Number,
+      type: String,
       required: true,
     },
     isDeleted: {

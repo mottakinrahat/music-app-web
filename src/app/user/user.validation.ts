@@ -14,7 +14,7 @@ const userValidationSchema = z.object({
       message:
         "Password must contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least 8 characters long",
     }),
-  contactNo: z.number({ required_error: "Contact number is required" }),
+  contactNo: z.string({ required_error: "Contact number is required" }),
   isDeleted: z.boolean().optional(),
   role: z.enum(["user", "admin"]).default("user"),
   status: z.enum(["blocked", "active"]).default("active"),

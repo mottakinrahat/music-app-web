@@ -4,9 +4,8 @@ export interface TSong {
   songName: string;
   songArtist: string;
   songLink:string;
-  songAlbum: string;
+  songAlbum: ObjectId;
   songDuration: string;
   releaseYear: number;
   genre: string;
-  albumId:ObjectId;
 }

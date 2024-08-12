@@ -12,7 +12,8 @@ const songSchema = new Schema<TSong>({
     required: [true, "songArtist is required"],
   },
   songAlbum: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref:"Album",
     required: [true, "songAlbum is required"],
   },
   songDuration: {
@@ -30,11 +31,6 @@ const songSchema = new Schema<TSong>({
   songLink: {
     type: String,
     required: [true, "song link is required"],
-  },
-  albumId: {
-    type: Schema.Types.ObjectId,
-    ref:"Album",
-    required: [true, "albumId is required"],
   },
 });
 
