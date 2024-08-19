@@ -9,7 +9,8 @@ router.post(
   validateRequest(categoryValidation.categoryValidationSchema),
   categoryController.createCategory
 );
-
 router.get("/", categoryController.getCategories);
+router.put("/:id", categoryController.updateCategory);
+router.delete("/:id", categoryController.deleteCategory);
 
 export const categoryRoutes = router;
