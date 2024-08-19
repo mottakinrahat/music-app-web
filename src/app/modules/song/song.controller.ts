@@ -32,8 +32,21 @@ const getSingleSong = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+const getSongsByCategory = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const songs = await songServices.getSongsByCategoryFromDB(id);
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "songs retrived successfully",
+    data: songs,
+  });
+});
 export const songController = {
   createSong,
   getAllSong,
   getSingleSong,
+  getSongsByCategory,
 };

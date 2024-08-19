@@ -16,8 +16,14 @@ const getSingleSongFromDB = async (id: string) => {
   return result;
 };
 
+const getSongsByCategoryFromDB = async (id: string) => {
+  const songs = await Song.find({ category: id }).populate("category");
+  return songs;
+};
+
 export const songServices = {
   createSongIntoDB,
   getSongFromDB,
   getSingleSongFromDB,
+  getSongsByCategoryFromDB,
 };
