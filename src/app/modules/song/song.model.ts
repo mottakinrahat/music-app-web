@@ -34,7 +34,7 @@ const songSchema = new Schema<TSong>({
   },
   category: {
     type: Schema.ObjectId,
-    ref: "Categories",
+    ref: "Category",
     required: [true, "Please select category"],
   },
 });

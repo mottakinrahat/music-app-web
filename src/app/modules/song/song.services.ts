@@ -7,7 +7,7 @@ const createSongIntoDB = async (payload: TSong) => {
   return result;
 };
 const getSongFromDB = async () => {
-  const result = await Song.find().populate("songAlbum");
+  const result = await Song.find().populate("songAlbum").populate("category");
   return result;
 };
 const getSingleSongFromDB = async (id: string) => {
