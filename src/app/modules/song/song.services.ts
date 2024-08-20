@@ -3,7 +3,6 @@ import { Song } from "./song.model";
 
 const createSongIntoDB = async (payload: TSong) => {
   const result = await Song.create(payload);
-
   return result;
 };
 const getSongFromDB = async () => {
@@ -11,13 +10,14 @@ const getSongFromDB = async () => {
   return result;
 };
 const getSingleSongFromDB = async (id: string) => {
-  const result = await Song.findById(id);
-
+  const result = await Song.findById(id).populate("category");
   return result;
 };
 
 const getSongsByCategoryFromDB = async (id: string) => {
-  const songs = await Song.find({ category: id }).populate("category");
+  const songs = await Song.find({ category: id })
+    .populate("songAlbum")
+    .populate("category");
   return songs;
 };
 
