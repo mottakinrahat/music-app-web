@@ -10,7 +10,9 @@ const getSongFromDB = async () => {
   return result;
 };
 const getSingleSongFromDB = async (id: string) => {
-  const result = await Song.findById(id).populate("category");
+  const result = await Song.findById(id)
+    .populate("songAlbum")
+    .populate("category");
   return result;
 };
 

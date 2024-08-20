@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+const lyricSchema = z.object({
+  startTime: z.string().nonempty({ message: "startTime is required" }),
+  endTime: z.string().nonempty({ message: "endTime is required" }),
+  line: z.string().nonempty({ message: "line is required" }),
+});
+
 // Define the Zod schema
 export const songValidationSchema = z.object({
   songName: z.string().nonempty({ message: "songName is required" }),
@@ -14,6 +20,9 @@ export const songValidationSchema = z.object({
       message: "releaseYear cannot be in the future",
     }),
   genre: z.string().nonempty({ message: "genre is required" }),
+  lyrics: z
+    .array(lyricSchema)
+    .nonempty({ message: "At least one lyric is required" }),
 });
 
 // Example usage

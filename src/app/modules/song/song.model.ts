@@ -33,10 +33,17 @@ const songSchema = new Schema<TSong>({
     required: [true, "song link is required"],
   },
   category: {
-    type: Schema.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "Category",
     required: [true, "Please select category"],
   },
+  lyrics: [
+    {
+      startTime: { type: String, required: true },
+      endTime: { type: String, required: true },
+      line: { type: String, required: true },
+    },
+  ],
 });
 
 // Create the model

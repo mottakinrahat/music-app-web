@@ -12,4 +12,5 @@ router.post(
 router.get("/", songController.getAllSong);
 router.get("/:id", songController.getSingleSong);
 router.get("/category/:id", songController.getSongsByCategory);
+router.get("/:id/duration", songController.getDurationByLyrics);
 export const songRoutes = router;

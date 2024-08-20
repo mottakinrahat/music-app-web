@@ -23,8 +23,8 @@ Song Route:
 2. for songs retrived GET Method => api/v1/songs
 3. for single song retrived GET Method => api/v1/songs/id
 4. for get songs by category GET Method => api/v1/songs/category/id
-<!-- 5. for song update PUT Method => api/v1/songs/id
-5. for song delete DELETE Method => api/v1/songs/id -->
+5. get song lyrics by duration GET Method => api/v1/songs/id/duration
+<!-- 6. get song lyrics by duration GET Method => api/v1/songs/id/duration?time=25sec -->
 
 Album Route:
 
