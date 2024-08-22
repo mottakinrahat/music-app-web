@@ -1,5 +1,7 @@
+import httpStatus from "http-status";
 import { TBlog } from "./blog.interface";
 import { BLog } from "./blog.model";
+import AppError from "../../utils/AppError";
 
 const createBlogIntoDB = async (payload: TBlog) => {
   const result = await BLog.create(payload);
@@ -7,13 +9,19 @@ const createBlogIntoDB = async (payload: TBlog) => {
 };
 
 const getBlogsIntoDB = async () => {
-  const result = await BLog.find().populate("blogWriter");
-  return result;
+  const blogs = await BLog.find().populate("blogWriter");
+  if (!blogs) {
+    throw new AppError(httpStatus.NOT_FOUND, "blogs not found!");
+  }
+  return blogs;
 };
 
 const getSingleBlogIntoDB = async (id: string) => {
-  const result = await BLog.findById(id);
-  return result;
+  const blog = await BLog.findById(id);
+  if (!blog) {
+    throw new AppError(httpStatus.NOT_FOUND, "blog not found!");
+  }
+  return blog;
 };
 
 const updateBlogIntoDB = async (id: string, payload: Partial<TBlog>) => {

@@ -1,3 +1,5 @@
+import httpStatus from "http-status";
+import AppError from "../../utils/AppError";
 import { TSong } from "./song.interface";
 import { Song } from "./song.model";
 
@@ -5,14 +7,22 @@ const createSongIntoDB = async (payload: TSong) => {
   const result = await Song.create(payload);
   return result;
 };
+
 const getSongFromDB = async () => {
-  const result = await Song.find().populate("songAlbum").populate("category");
-  return result;
+  const results = await Song.find().populate("songAlbum").populate("category");
+  if (!results) {
+    throw new AppError(httpStatus.NOT_FOUND, "songs not found!");
+  }
+  return results;
 };
+
 const getSingleSongFromDB = async (id: string) => {
   const result = await Song.findById(id)
     .populate("songAlbum")
     .populate("category");
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "song not found!");
+  }
   return result;
 };
 
@@ -20,6 +30,9 @@ const getSongsByCategoryFromDB = async (id: string) => {
   const songs = await Song.find({ category: id })
     .populate("songAlbum")
     .populate("category");
+  if (!songs) {
+    throw new AppError(httpStatus.NOT_FOUND, "songs not found!");
+  }
   return songs;
 };
 

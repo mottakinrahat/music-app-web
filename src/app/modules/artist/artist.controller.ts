@@ -19,11 +19,8 @@ const getAritsts = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     statusCode: 200,
-    message:
-      artists.length !== 0
-        ? "artists retrived successfully"
-        : "artists not found",
-    data: artists.length !== 0 ? artists : [],
+    message: "artists retrived successfully",
+    data: artists,
   });
 });
 
@@ -32,10 +29,10 @@ const getAritst = catchAsync(async (req, res) => {
   const artist = await artistServices.getSingleArtistIntoDB(id);
 
   sendResponse(res, {
-    success: artist ? true : false,
-    statusCode: artist ? 200 : 404,
-    message: artist ? "artist retrived successfully" : "artist not found",
-    data: artist ? artist : {},
+    success: true,
+    statusCode: 200,
+    message: "artist retrived successfully",
+    data: artist,
   });
 });
 

@@ -17,12 +17,10 @@ const getCategories = catchAsync(async (req, res) => {
   const results = await categoryServices.getCategoriesIntoDB();
 
   sendResponse(res, {
-    success: results ? true : false,
-    statusCode: results ? 200 : 404,
-    message: results
-      ? "Categories retrived successfully"
-      : "categories not found",
-    data: results ? results : [],
+    success: true,
+    statusCode: 200,
+    message: "Categories retrived successfully",
+    data: results,
   });
 });
 

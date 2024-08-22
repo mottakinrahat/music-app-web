@@ -1,3 +1,5 @@
+import httpStatus from "http-status";
+import AppError from "../../utils/AppError";
 import { TCategory } from "./category.interface";
 import { Category } from "./category.model";
 
@@ -7,8 +9,11 @@ const createCategoryIntoDB = async (payload: TCategory) => {
 };
 
 const getCategoriesIntoDB = async () => {
-  const result = await Category.find();
-  return result;
+  const results = await Category.find();
+  if (!results) {
+    throw new AppError(httpStatus.NOT_FOUND, "categories not found!");
+  }
+  return results;
 };
 
 const updateCategoryIntoDB = async (

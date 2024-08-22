@@ -17,10 +17,10 @@ const getBlogs = catchAsync(async (req, res) => {
   const blogs = await blogService.getBlogsIntoDB();
 
   sendResponse(res, {
-    success: blogs ? true : false,
-    statusCode: blogs ? 200 : 404,
-    message: blogs ? "blogs retrived successfully" : "blogs not found",
-    data: blogs ? blogs : [],
+    success: true,
+    statusCode: 200,
+    message: "blogs retrived successfully",
+    data: blogs,
   });
 });
 
@@ -29,10 +29,10 @@ const getSingleBlog = catchAsync(async (req, res) => {
   const blog = await blogService.getSingleBlogIntoDB(id);
 
   sendResponse(res, {
-    success: blog ? true : false,
-    statusCode: blog ? 200 : 404,
-    message: blog ? "blog retrived successfully" : "blog not found",
-    data: blog ? blog : {},
+    success: true,
+    statusCode: 200,
+    message: "blog retrived successfully",
+    data: blog,
   });
 });
 

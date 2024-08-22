@@ -54,13 +54,13 @@ const changePassword = catchAsync(async (req, res) => {
 
 const getPlayList = catchAsync(async (req, res) => {
   const { userId } = req.params;
-  const user = await UserService.getSingleUserIntoDB(userId);
+  const playList = await UserService.getPlayListIntoDB(userId);
 
   sendResponse(res, {
     success: true,
     statusCode: 200,
-    message: user?.playList ? "play list retrived success" : "",
-    data: user?.playList ? user?.playList : "play list not found",
+    message: "play list retrived success",
+    data: playList,
   });
 });
 
