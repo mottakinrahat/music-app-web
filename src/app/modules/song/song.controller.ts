@@ -1,4 +1,3 @@
-import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { songServices } from "./song.services";
@@ -25,23 +24,23 @@ const createSong = catchAsync(async (req, res) => {
 });
 
 const getAllSong = catchAsync(async (req, res) => {
-  const result = await songServices.getSongFromDB();
+  const songs = await songServices.getSongFromDB();
   sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Event items retrieved successfully",
-    data: result,
+    success: songs ? true : false,
+    statusCode: songs ? 200 : 404,
+    message: songs ? "songs retrieved successfully" : "songs not found",
+    data: songs ? songs : [],
   });
 });
 
 const getSingleSong = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const result = await songServices.getSingleSongFromDB(id);
+  const song = await songServices.getSingleSongFromDB(id);
   sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Song is retrieved successfully",
-    data: result,
+    success: song ? true : false,
+    statusCode: song ? 200 : 404,
+    message: song ? "Song is retrieved successfully" : "song not found",
+    data: song ? song : {},
   });
 });
 
@@ -50,10 +49,10 @@ const getSongsByCategory = catchAsync(async (req, res) => {
 
   const songs = await songServices.getSongsByCategoryFromDB(id);
   sendResponse(res, {
-    success: true,
-    statusCode: 200,
-    message: "songs retrived successfully",
-    data: songs,
+    success: songs ? true : false,
+    statusCode: songs ? 200 : 404,
+    message: songs ? "songs retrived successfully" : "songs not found",
+    data: songs ? songs : [],
   });
 });
 
