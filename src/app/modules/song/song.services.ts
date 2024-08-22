@@ -2,17 +2,26 @@ import httpStatus from "http-status";
 import AppError from "../../utils/AppError";
 import { TSong } from "./song.interface";
 import { Song } from "./song.model";
+import { FilterQuery } from "mongoose";
+
+export interface ISong extends Document {
+  songName: string;
+  genre: string;
+}
 
 const createSongIntoDB = async (payload: TSong) => {
   const result = await Song.create(payload);
   return result;
 };
 
-const getSongFromDB = async () => {
-  const results = await Song.find().populate("songAlbum").populate("category");
+const getSongFromDB = async (payload: FilterQuery<Partial<ISong>>) => {
+  const results = await Song.find(payload)
+    .populate("songAlbum")
+    .populate("category");
   if (!results) {
     throw new AppError(httpStatus.NOT_FOUND, "songs not found!");
   }
+
   return results;
 };
 

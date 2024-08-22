@@ -1,9 +1,9 @@
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { songServices } from "./song.services";
 import { Album } from "../album/album.model";
 import { UserModel } from "../../user/user.model";
+import { songServices } from "./song.services";
 
 const createSong = catchAsync(async (req, res) => {
   const { songAlbum } = req.body;
@@ -25,7 +25,18 @@ const createSong = catchAsync(async (req, res) => {
 });
 
 const getAllSong = catchAsync(async (req, res) => {
-  const result = await songServices.getSongFromDB();
+  const search = req.query.search || "";
+
+  const searchRegExp = new RegExp(".*" + search + ".*", "i");
+
+  const filter = {
+    $or: [
+      { songName: { $regex: searchRegExp } },
+      { genre: { $regex: searchRegExp } },
+    ],
+  };
+
+  const result = await songServices.getSongFromDB(filter);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
