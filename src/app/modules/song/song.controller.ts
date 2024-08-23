@@ -4,6 +4,7 @@ import sendResponse from "../../utils/sendResponse";
 import { Album } from "../album/album.model";
 import { UserModel } from "../../user/user.model";
 import { songServices } from "./song.services";
+import { Song } from "./song.model";
 
 const createSong = catchAsync(async (req, res) => {
   const { songAlbum } = req.body;
@@ -25,6 +26,8 @@ const createSong = catchAsync(async (req, res) => {
 });
 
 const getAllSong = catchAsync(async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 2;
   const search = req.query.search || "";
 
   const searchRegExp = new RegExp(".*" + search + ".*", "i");
@@ -36,12 +39,28 @@ const getAllSong = catchAsync(async (req, res) => {
     ],
   };
 
-  const result = await songServices.getSongFromDB(filter);
+  const totalSongs = await Song.find(filter).countDocuments();
+
+  const songs = await songServices.getSongFromDB(
+    filter,
+    limit,
+    (page - 1) * limit
+  );
+
+  const totalPages = Math.ceil(totalSongs / limit);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "songs retrieved successfully",
-    data: result,
+    message: "Songs retrieved successfully",
+    data: {
+      songs: songs,
+      pagination: {
+        currentPage: page,
+        totalPages: totalPages,
+        totalSongs: totalSongs,
+      },
+    },
   });
 });
 

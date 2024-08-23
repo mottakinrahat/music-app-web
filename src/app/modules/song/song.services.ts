@@ -14,10 +14,17 @@ const createSongIntoDB = async (payload: TSong) => {
   return result;
 };
 
-const getSongFromDB = async (payload: FilterQuery<Partial<ISong>>) => {
-  const results = await Song.find(payload)
+const getSongFromDB = async (
+  filter: FilterQuery<Partial<ISong>>,
+  limit: number,
+  skip: number
+) => {
+  const results = await Song.find(filter)
     .populate("songAlbum")
-    .populate("category");
+    .populate("category")
+    .limit(limit)
+    .skip(skip);
+
   if (!results) {
     throw new AppError(httpStatus.NOT_FOUND, "songs not found!");
   }
