@@ -51,14 +51,8 @@ const songSchema = new Schema<TSong>(
       required: [true, "Please select category"],
     },
     lyrics: [nestedSchema],
-    isFavourite: {
-      type: Boolean,
-      default: false,
-    },
-    isPlayList: {
-      type: Boolean,
-      default: false,
-    },
+    favUsers: [{ type: Schema.Types.ObjectId, ref: "User", default: [] }],
+    playListUsers: [{ type: Schema.Types.ObjectId, ref: "User", default: [] }],
   },
   {
     timestamps: true,

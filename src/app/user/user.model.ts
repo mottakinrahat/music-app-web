@@ -36,16 +36,8 @@ const userSchema = new Schema<TUser, TUserModel>(
       enum: ["active", "blocked"],
       default: "active",
     },
-    playList: {
-      type: Array,
-      ref: "Song",
-      default: [],
-    },
-    favList: {
-      type: Array,
-      ref: "Song",
-      default: [],
-    },
+    playList: [{ type: Schema.Types.ObjectId, ref: "Song", default: [] }],
+    favList: [{ type: Schema.Types.ObjectId, ref: "Song", default: [] }],
   },
   {
     timestamps: true,

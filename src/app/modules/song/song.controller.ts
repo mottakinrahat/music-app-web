@@ -5,6 +5,7 @@ import { Album } from "../album/album.model";
 import { UserModel } from "../../user/user.model";
 import { songServices } from "./song.services";
 import { Song } from "./song.model";
+import mongoose from "mongoose";
 
 const createSong = catchAsync(async (req, res) => {
   const { songAlbum } = req.body;
@@ -201,6 +202,10 @@ const getDurationByLyrics = catchAsync(async (req, res) => {
 const favHandler = catchAsync(async (req, res) => {
   const { id, userId } = req.params;
 
+  const { ObjectId } = mongoose.Types;
+
+  const userObjectId = new ObjectId(userId);
+
   const song = await songServices.getSingleSongFromDB(id);
 
   if (!song) {
@@ -212,38 +217,60 @@ const favHandler = catchAsync(async (req, res) => {
     });
   }
 
-  if (song?.isFavourite === false) {
-    const updateSong = await songServices.updateSongIntoDB(id, {
-      isFavourite: true,
-    });
-    const favSongId = updateSong?._id;
-    await UserModel.findByIdAndUpdate(
-      userId,
-      { $push: { favList: favSongId } },
-      { new: true }
+  if (Array.isArray(song.favUsers)) {
+    const isFavourite = song.favUsers.some((favUserId) =>
+      favUserId.equals(userObjectId)
     );
-    sendResponse(res, {
-      success: true,
-      statusCode: 200,
-      message: "update song from unfavourite to favourite",
-      data: { IsFavourite: true },
-    });
-  } else {
-    const updateSong = await songServices.updateSongIntoDB(id, {
-      isFavourite: false,
-    });
 
-    const favSongId = updateSong?._id;
-    await UserModel.findByIdAndUpdate(
-      userId,
-      { $pull: { favList: favSongId } },
-      { new: true }
-    );
+    if (!isFavourite) {
+      await Song.updateOne(
+        { _id: id },
+        {
+          $addToSet: { favUsers: userObjectId },
+        }
+      );
+
+      await UserModel.updateOne(
+        { _id: userId },
+        {
+          $addToSet: { favList: id },
+        }
+      );
+
+      sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Song added to favourites",
+        data: { isFavourite: true },
+      });
+    } else {
+      await Song.updateOne(
+        { _id: id },
+        {
+          $pull: { favUsers: userObjectId },
+        }
+      );
+
+      await UserModel.updateOne(
+        { _id: userId },
+        {
+          $pull: { favList: id },
+        }
+      );
+
+      sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Song removed from favourites",
+        data: { isFavourite: false },
+      });
+    }
+  } else {
     sendResponse(res, {
-      success: true,
-      statusCode: 200,
-      message: "update song from favourite to unfavourite",
-      data: { IsFavourite: false },
+      success: false,
+      statusCode: 500,
+      message: "Unexpected error: favUsers is not an array",
+      data: {},
     });
   }
 });
@@ -251,6 +278,10 @@ const favHandler = catchAsync(async (req, res) => {
 const playListHandler = catchAsync(async (req, res) => {
   const { id, userId } = req.params;
 
+  const { ObjectId } = mongoose.Types;
+
+  const userObjectId = new ObjectId(userId);
+
   const song = await songServices.getSingleSongFromDB(id);
 
   if (!song) {
@@ -262,38 +293,60 @@ const playListHandler = catchAsync(async (req, res) => {
     });
   }
 
-  if (song?.isPlayList === false) {
-    const updateSong = await songServices.updateSongIntoDB(id, {
-      isPlayList: true,
-    });
-    const playlistsongId = updateSong?._id;
-    await UserModel.findByIdAndUpdate(
-      userId,
-      { $push: { playList: playlistsongId } },
-      { new: true }
+  if (Array.isArray(song.playListUsers)) {
+    const isPlayList = song.playListUsers.some((playListUserId) =>
+      playListUserId.equals(userObjectId)
     );
-    sendResponse(res, {
-      success: true,
-      statusCode: 200,
-      message: "this song added to playlist",
-      data: { isPlayList: true },
-    });
-  } else {
-    const updateSong = await songServices.updateSongIntoDB(id, {
-      isPlayList: false,
-    });
 
-    const playlistsongId = updateSong?._id;
-    await UserModel.findByIdAndUpdate(
-      userId,
-      { $pull: { playList: playlistsongId } },
-      { new: true }
-    );
+    if (!isPlayList) {
+      await Song.updateOne(
+        { _id: id },
+        {
+          $addToSet: { playListUsers: userObjectId },
+        }
+      );
+
+      await UserModel.updateOne(
+        { _id: userId },
+        {
+          $addToSet: { playList: id },
+        }
+      );
+
+      sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Song added to play list",
+        data: { isPlayList: true },
+      });
+    } else {
+      await Song.updateOne(
+        { _id: id },
+        {
+          $pull: { playListUsers: userObjectId },
+        }
+      );
+
+      await UserModel.updateOne(
+        { _id: userId },
+        {
+          $pull: { playList: id },
+        }
+      );
+
+      sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Song removed from playList",
+        data: { isPlayList: false },
+      });
+    }
+  } else {
     sendResponse(res, {
-      success: true,
-      statusCode: 200,
-      message: "this song remove from playlist",
-      data: { isPlayList: false },
+      success: false,
+      statusCode: 500,
+      message: "Unexpected error: playListUsers is not an array",
+      data: {},
     });
   }
 });
