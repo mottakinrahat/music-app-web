@@ -262,7 +262,7 @@ const playListHandler = catchAsync(async (req, res) => {
     });
   }
 
-  if (song?.isFavourite === false) {
+  if (song?.isPlayList === false) {
     const updateSong = await songServices.updateSongIntoDB(id, {
       isPlayList: true,
     });
