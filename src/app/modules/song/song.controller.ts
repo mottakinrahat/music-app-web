@@ -275,7 +275,7 @@ const playListHandler = catchAsync(async (req, res) => {
     sendResponse(res, {
       success: true,
       statusCode: 200,
-      message: "this song remove from playlist",
+      message: "this song added to playlist",
       data: { isPlayList: true },
     });
   } else {
@@ -292,7 +292,7 @@ const playListHandler = catchAsync(async (req, res) => {
     sendResponse(res, {
       success: true,
       statusCode: 200,
-      message: "this song added to playlist",
+      message: "this song remove from playlist",
       data: { isPlayList: false },
     });
   }
