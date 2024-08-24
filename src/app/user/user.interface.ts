@@ -12,6 +12,7 @@ export interface TUser {
   isDeleted: boolean;
   status: "blocked" | "active";
   playList: ObjectId;
+  favList: ObjectId;
 }
 
 export type TLoginUser = {

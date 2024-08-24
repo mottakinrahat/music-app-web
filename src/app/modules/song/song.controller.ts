@@ -219,7 +219,7 @@ const favHandler = catchAsync(async (req, res) => {
     const favSongId = updateSong?._id;
     await UserModel.findByIdAndUpdate(
       userId,
-      { $push: { playList: favSongId } },
+      { $push: { favList: favSongId } },
       { new: true }
     );
     sendResponse(res, {
@@ -236,7 +236,7 @@ const favHandler = catchAsync(async (req, res) => {
     const favSongId = updateSong?._id;
     await UserModel.findByIdAndUpdate(
       userId,
-      { $pull: { playList: favSongId } },
+      { $pull: { favList: favSongId } },
       { new: true }
     );
     sendResponse(res, {
@@ -248,6 +248,56 @@ const favHandler = catchAsync(async (req, res) => {
   }
 });
 
+const playListHandler = catchAsync(async (req, res) => {
+  const { id, userId } = req.params;
+
+  const song = await songServices.getSingleSongFromDB(id);
+
+  if (!song) {
+    sendResponse(res, {
+      success: false,
+      statusCode: 404,
+      message: "song not found",
+      data: {},
+    });
+  }
+
+  if (song?.isFavourite === false) {
+    const updateSong = await songServices.updateSongIntoDB(id, {
+      isPlayList: true,
+    });
+    const playlistsongId = updateSong?._id;
+    await UserModel.findByIdAndUpdate(
+      userId,
+      { $push: { playList: playlistsongId } },
+      { new: true }
+    );
+    sendResponse(res, {
+      success: true,
+      statusCode: 200,
+      message: "this song remove from playlist",
+      data: { isPlayList: true },
+    });
+  } else {
+    const updateSong = await songServices.updateSongIntoDB(id, {
+      isPlayList: false,
+    });
+
+    const playlistsongId = updateSong?._id;
+    await UserModel.findByIdAndUpdate(
+      userId,
+      { $pull: { playList: playlistsongId } },
+      { new: true }
+    );
+    sendResponse(res, {
+      success: true,
+      statusCode: 200,
+      message: "this song added to playlist",
+      data: { isPlayList: false },
+    });
+  }
+});
+
 export const songController = {
   createSong,
   getAllSong,
@@ -255,4 +305,5 @@ export const songController = {
   getSongsByCategory,
   getDurationByLyrics,
   favHandler,
+  playListHandler,
 };

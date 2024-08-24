@@ -31,5 +31,6 @@ router.post(
 );
 
 router.get("/play-list/:userId", UserControllers.getPlayList);
+router.get("/fav-list/:userId", UserControllers.getFavList);
 
 export const UserRoutes = router;

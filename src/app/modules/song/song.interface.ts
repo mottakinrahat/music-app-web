@@ -17,5 +17,6 @@ export interface TSong {
   category: ObjectId;
   lyrics: Lyric[];
   isFavourite: boolean;
+  isPlayList: boolean;
   album: ObjectId;
 }

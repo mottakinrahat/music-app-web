@@ -41,6 +41,11 @@ const userSchema = new Schema<TUser, TUserModel>(
       ref: "Song",
       default: [],
     },
+    favList: {
+      type: Array,
+      ref: "Song",
+      default: [],
+    },
   },
   {
     timestamps: true,

@@ -52,6 +52,10 @@ const songSchema = new Schema<TSong>(
       type: Boolean,
       default: false,
     },
+    isPlayList: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
