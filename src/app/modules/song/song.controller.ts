@@ -26,8 +26,8 @@ const createSong = catchAsync(async (req, res) => {
 });
 
 const getAllSong = catchAsync(async (req, res) => {
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 2;
+  const page = Number(req.query.page);
+  const limit = Number(req.query.limit);
   const search = req.query.search || "";
 
   const searchRegExp = new RegExp(".*" + search + ".*", "i");
