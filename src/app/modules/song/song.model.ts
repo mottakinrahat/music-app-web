@@ -17,6 +17,9 @@ const songSchema = new Schema<TSong>(
       type: String,
       required: [true, "songName is required"],
     },
+    artwork: {
+      type: String,
+    },
     songArtist: {
       type: String,
       required: [true, "songArtist is required"],

@@ -8,6 +8,7 @@ interface Lyric {
 
 export interface TSong {
   songName: string;
+  artwork: string;
   songArtist: string;
   songLink: string;
   songAlbum: ObjectId;
