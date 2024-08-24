@@ -19,6 +19,7 @@ const songSchema = new Schema<TSong>(
     },
     artwork: {
       type: String,
+      default: "",
     },
     songArtist: {
       type: String,
