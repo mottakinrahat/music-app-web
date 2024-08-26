@@ -30,6 +30,4 @@ router.post(
   UserControllers.changePassword
 );
 
-router.get("/play-list/:userId", UserControllers.getPlayList);
-
 export const UserRoutes = router;

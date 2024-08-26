@@ -36,7 +36,6 @@ const userSchema = new Schema<TUser, TUserModel>(
       enum: ["active", "blocked"],
       default: "active",
     },
-    playList: [{ type: Schema.Types.ObjectId, ref: "Song", default: [] }],
   },
   {
     timestamps: true,

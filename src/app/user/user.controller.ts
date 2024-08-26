@@ -52,21 +52,8 @@ const changePassword = catchAsync(async (req, res) => {
   }
 });
 
-const getPlayList = catchAsync(async (req, res) => {
-  const { userId } = req.params;
-  const playList = await UserService.getPlayListIntoDB(userId);
-
-  sendResponse(res, {
-    success: true,
-    statusCode: 200,
-    message: "play list retrived success",
-    data: playList,
-  });
-});
-
 export const UserControllers = {
   createUser,
   loginUser,
   changePassword,
-  getPlayList,
 };
