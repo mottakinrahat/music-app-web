@@ -9,7 +9,9 @@ const createPlayListIntoDB = async (payload: TPlaylist) => {
 };
 
 const getPlayListByUserFromDB = async (id: string) => {
-  const playListByUser = await Playlist.find({ userId: id });
+  const playListByUser = await Playlist.find({ userId: id }).populate(
+    "playListSongs"
+  );
   if (!playListByUser) {
     throw new AppError(httpStatus.NOT_FOUND, "play list user not found!");
   }
