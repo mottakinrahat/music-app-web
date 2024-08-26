@@ -29,13 +29,13 @@ const createPlaylist = catchAsync(async (req, res) => {
 
 const getPlayListSongs = catchAsync(async (req, res) => {
   const { userId } = req.params;
-  const playListUser = await PlayListServices.getPlayListUserFromDB(userId);
+  const playListUser = await PlayListServices.getPlayListByUserFromDB(userId);
 
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
-    message: "Play list songs retrived successfully",
-    data: playListUser.playListSongs,
+    message: "Play list retrived successfully",
+    data: playListUser,
   });
 });
 
@@ -56,10 +56,6 @@ const playlistHandler = catchAsync(async (req, res) => {
     });
   }
 
-  const playList = await PlayListServices.getPlayListUserFromDB(userId);
-
-  const playListId = playList._id;
-  
   if (Array.isArray(song.playListUsers)) {
     const isPlayList = song.playListUsers.some((playlistUserId) =>
       playlistUserId.equals(userObjectId)
@@ -71,9 +67,8 @@ const playlistHandler = catchAsync(async (req, res) => {
         { $addToSet: { playListUsers: userObjectId } }
       );
 
-
       await Playlist.updateOne(
-        { _id: playListId },
+        { _id: userObjectId },
         { $addToSet: { playListSongs: id } }
       );
 

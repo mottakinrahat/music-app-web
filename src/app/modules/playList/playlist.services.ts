@@ -8,17 +8,16 @@ const createPlayListIntoDB = async (payload: TPlaylist) => {
   return result;
 };
 
-const getPlayListUserFromDB = async (id: string) => {
-  const playListUser = await Playlist.findOne({ userId: id }).populate(
-    "playListSongs"
-  );
-  if (!playListUser) {
-    throw new AppError(httpStatus.NOT_FOUND, "play list songs not found!");
+const getPlayListByUserFromDB = async (id: string) => {
+  const playListUser = await Playlist.find({ userId: id });
+  const playListbyUser = playListUser;
+  if (!playListbyUser) {
+    throw new AppError(httpStatus.NOT_FOUND, "play list user user not found!");
   }
-  return playListUser;
+  return playListbyUser;
 };
 
 export const PlayListServices = {
   createPlayListIntoDB,
-  getPlayListUserFromDB,
+  getPlayListByUserFromDB,
 };
