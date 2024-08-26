@@ -176,18 +176,9 @@ const getPlayListIntoDB = async (id: string) => {
   return user?.playList;
 };
 
-const getFavListIntoDB = async (id: string) => {
-  const user = await UserModel.findById(id).populate("favList");
-  if (!user?.playList) {
-    throw new AppError(httpStatus.NOT_FOUND, "play list not found!");
-  }
-  return user?.favList;
-};
-
 export const UserService = {
   createUserIntoDB,
   loginUser,
   changePasswordIntoDB,
   getPlayListIntoDB,
-  getFavListIntoDB,
 };

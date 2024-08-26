@@ -64,22 +64,9 @@ const getPlayList = catchAsync(async (req, res) => {
   });
 });
 
-const getFavList = catchAsync(async (req, res) => {
-  const { userId } = req.params;
-  const favList = await UserService.getFavListIntoDB(userId);
-
-  sendResponse(res, {
-    success: true,
-    statusCode: 200,
-    message: "favourite list retrived success",
-    data: favList,
-  });
-});
-
 export const UserControllers = {
   createUser,
   loginUser,
   changePassword,
   getPlayList,
-  getFavList,
 };
