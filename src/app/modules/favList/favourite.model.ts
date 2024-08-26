@@ -11,5 +11,4 @@ const favouriteSchema = new Schema<TFavourite>(
   }
 );
 
-// Create the model
 export const Favourite = model("Favourite", favouriteSchema);

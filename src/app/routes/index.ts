@@ -7,6 +7,7 @@ import { categoryRoutes } from "../modules/category/category.route";
 import { blogRoutes } from "../modules/blog/blog.route";
 import { artistRoutes } from "../modules/artist/artist.route";
 import { favoriteRoute } from "../modules/favList/favourite.route";
+import { playlistRoutes } from "../modules/playList/playlist.route";
 
 const router = Router();
 const moduleRoutes = [
@@ -41,6 +42,10 @@ const moduleRoutes = [
   {
     path: "/favourite",
     route: favoriteRoute,
+  },
+  {
+    path: "/play-list",
+    route: playlistRoutes,
   },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

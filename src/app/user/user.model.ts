@@ -37,7 +37,6 @@ const userSchema = new Schema<TUser, TUserModel>(
       default: "active",
     },
     playList: [{ type: Schema.Types.ObjectId, ref: "Song", default: [] }],
-    favList: [{ type: Schema.Types.ObjectId, ref: "Song", default: [] }],
   },
   {
     timestamps: true,
