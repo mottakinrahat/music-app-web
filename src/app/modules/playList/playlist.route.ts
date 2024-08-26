@@ -10,7 +10,7 @@ router.post(
   validateRequest(playlistValidation.playlistValidationSchema),
   playListController.createPlaylist
 );
-router.get("/:userId", playListController.getPlayListSongs);
+router.get("/:userId", playListController.getPlayListByUser);
 router.put("/:id/:userId", playListController.playlistHandler);
 
 export const playlistRoutes = router;

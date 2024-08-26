@@ -27,7 +27,7 @@ const createPlaylist = catchAsync(async (req, res) => {
   });
 });
 
-const getPlayListSongs = catchAsync(async (req, res) => {
+const getPlayListByUser = catchAsync(async (req, res) => {
   const { userId } = req.params;
   const playListUser = await PlayListServices.getPlayListByUserFromDB(userId);
 
@@ -108,6 +108,6 @@ const playlistHandler = catchAsync(async (req, res) => {
 
 export const playListController = {
   createPlaylist,
-  getPlayListSongs,
+  getPlayListByUser,
   playlistHandler,
 };
