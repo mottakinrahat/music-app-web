@@ -6,6 +6,7 @@ import { UserModel } from "../../user/user.model";
 import { songServices } from "./song.services";
 import { Song } from "./song.model";
 import mongoose from "mongoose";
+import { Favourite } from "../favList/favourite.model";
 
 const createSong = catchAsync(async (req, res) => {
   const { songAlbum } = req.body;
@@ -222,6 +223,16 @@ const favHandler = catchAsync(async (req, res) => {
       favUserId.equals(userObjectId)
     );
 
+    let favList = await Favourite.findOne({ userId: userObjectId });
+
+    if (!favList) {
+      favList = new Favourite({
+        userId: userObjectId,
+        favSongs: [],
+      });
+      await favList.save();
+    }
+
     if (!isFavourite) {
       await Song.updateOne(
         { _id: id },
@@ -230,10 +241,10 @@ const favHandler = catchAsync(async (req, res) => {
         }
       );
 
-      await UserModel.updateOne(
-        { _id: userId },
+      await Favourite.updateOne(
+        { userId: userId },
         {
-          $addToSet: { favList: id },
+          $addToSet: { favSongs: id },
         }
       );
 
@@ -251,10 +262,10 @@ const favHandler = catchAsync(async (req, res) => {
         }
       );
 
-      await UserModel.updateOne(
-        { _id: userId },
+      await Favourite.updateOne(
+        { userId: userId },
         {
-          $pull: { favList: id },
+          $pull: { favSongs: id },
         }
       );
 
