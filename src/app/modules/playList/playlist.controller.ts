@@ -40,7 +40,7 @@ const getPlayListByUser = catchAsync(async (req, res) => {
 });
 
 const playlistHandler = catchAsync(async (req, res) => {
-  const { id, userId } = req.params;
+  const { id, userId, playlistid } = req.params;
 
   const { ObjectId } = mongoose.Types;
   const userObjectId = new ObjectId(userId);
@@ -67,9 +67,10 @@ const playlistHandler = catchAsync(async (req, res) => {
         { $addToSet: { playListUsers: userObjectId } }
       );
 
-      await Playlist.updateOne(
-        { _id: userObjectId },
-        { $addToSet: { playListSongs: id } }
+      await Playlist.findByIdAndUpdate(
+        playlistid,
+        { $push: { playListSongs: id } },
+        { new: true }
       );
 
       return sendResponse(res, {
@@ -84,9 +85,12 @@ const playlistHandler = catchAsync(async (req, res) => {
         { $pull: { playListUsers: userObjectId } }
       );
 
-      await Playlist.updateOne(
-        { userId: userObjectId },
-        { $pull: { playListSongs: id } }
+      await Playlist.findByIdAndUpdate(
+        playlistid,
+        {
+          $pull: { playListSongs: id },
+        },
+        { new: true }
       );
 
       return sendResponse(res, {

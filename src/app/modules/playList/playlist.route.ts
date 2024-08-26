@@ -11,6 +11,6 @@ router.post(
   playListController.createPlaylist
 );
 router.get("/:userId", playListController.getPlayListByUser);
-router.put("/:id/:userId", playListController.playlistHandler);
+router.put("/:id/:userId/:playlistid", playListController.playlistHandler);
 
 export const playlistRoutes = router;

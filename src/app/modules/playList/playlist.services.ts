@@ -9,12 +9,11 @@ const createPlayListIntoDB = async (payload: TPlaylist) => {
 };
 
 const getPlayListByUserFromDB = async (id: string) => {
-  const playListUser = await Playlist.find({ userId: id });
-  const playListbyUser = playListUser;
-  if (!playListbyUser) {
-    throw new AppError(httpStatus.NOT_FOUND, "play list user user not found!");
+  const playListByUser = await Playlist.find({ userId: id });
+  if (!playListByUser) {
+    throw new AppError(httpStatus.NOT_FOUND, "play list user not found!");
   }
-  return playListbyUser;
+  return playListByUser;
 };
 
 export const PlayListServices = {
