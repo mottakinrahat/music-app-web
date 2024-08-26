@@ -167,18 +167,9 @@ const changePasswordIntoDB = async (
   return result;
 };
 
-//get single user
-const getPlayListIntoDB = async (id: string) => {
-  const user = await UserModel.findById(id).populate("playList");
-  if (!user?.playList) {
-    throw new AppError(httpStatus.NOT_FOUND, "play list not found!");
-  }
-  return user?.playList;
-};
 
 export const UserService = {
   createUserIntoDB,
   loginUser,
   changePasswordIntoDB,
-  getPlayListIntoDB,
 };
