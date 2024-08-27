@@ -13,31 +13,30 @@ const createUserArtist = catchAsync(async (req, res) => {
   if (role === "artist") {
     createdEntity = await artistServices.createArtistIntoDB(req.body);
     userRef = "Artist";
-  } else if (role === "user") {
-    createdEntity = await UserService.createUserIntoDB(req.body);
-    userRef = "User";
-  }
-
-  if (createdEntity) {
-    // Pass both userId and userRef to the userArtistService
     await userArtistService.createUserArtistIntoDB({
       userId: createdEntity._id,
       userRef,
       email,
     });
-
     sendResponse(res, {
       success: true,
       statusCode: 201,
       message: `${role} created successfully`,
       data: createdEntity,
     });
-  } else {
+  } else if (role === "user") {
+    createdEntity = await UserService.createUserIntoDB(req.body);
+    userRef = "User";
+    await userArtistService.createUserArtistIntoDB({
+      userId: createdEntity._id,
+      userRef,
+      email,
+    });
     sendResponse(res, {
-      success: false,
-      statusCode: 400,
-      message: "Invalid role specified",
-      data: {},
+      success: true,
+      statusCode: 201,
+      message: `${role} created successfully`,
+      data: createdEntity,
     });
   }
 });

@@ -13,10 +13,11 @@ import AppError from "../utils/AppError";
 import config from "../config";
 import { PasswordHistoryModel } from "../modules/passwordHistory/passwordHistory.model";
 import { newPasswordValidationSchema } from "./user.validation";
+import { UserArtist } from "../modules/user-artist/user-artist.model";
 
 // create user /register user
 const createUserIntoDB = async (payload: TUser) => {
-  const isUserExist = await UserModel.findOne({ email: payload.email });
+  const isUserExist = await UserArtist.findOne({ email: payload.email });
 
   if (isUserExist) {
     throw new AppError(

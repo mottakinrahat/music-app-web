@@ -2,10 +2,11 @@ import httpStatus from "http-status";
 import AppError from "../../utils/AppError";
 import { TArtist } from "./artist.interface";
 import { Artist } from "./artist.model";
+import { UserArtist } from "../user-artist/user-artist.model";
 
 const createArtistIntoDB = async (payload: TArtist) => {
   const email = payload.email;
-  const existEmail = await Artist.findOne({ email: email });
+  const existEmail = await UserArtist.findOne({ email: email });
   if (existEmail) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
