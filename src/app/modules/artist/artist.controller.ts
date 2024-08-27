@@ -3,6 +3,7 @@ import sendResponse from "../../utils/sendResponse";
 import { artistServices } from "./artist.services";
 
 const createArtist = catchAsync(async (req, res) => {
+  // const { role } = req.params;
   const artists = await artistServices.createArtistIntoDB(req.body);
 
   sendResponse(res, {

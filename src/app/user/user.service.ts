@@ -16,10 +16,13 @@ import { newPasswordValidationSchema } from "./user.validation";
 
 // create user /register user
 const createUserIntoDB = async (payload: TUser) => {
-  const isUserExist = await UserModel.findOne({ email: payload?.email });
+  const isUserExist = await UserModel.findOne({ email: payload.email });
 
   if (isUserExist) {
-    throw new AppError(httpStatus.BAD_REQUEST, "User already exist");
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "this email already registered as a user"
+    );
   }
 
   const result = (await UserModel.create(payload)) as UserDocument;
@@ -40,8 +43,9 @@ const createUserIntoDB = async (payload: TUser) => {
   }
 
   const returnUser = {
-    _id: result?._id,
-    username: result?.username,
+    _id: result._id,
+    firstName: result?.firtsName,
+    lastName: result?.lastName,
     email: result?.email,
     role: result?.role,
     createdAt: result?.createdAt,
@@ -68,13 +72,16 @@ const loginUser = async (payload: TLoginUser) => {
 
   const jwtPayload = {
     _id: user._id,
+    firstName: user?.firtsName,
+    lastName: user?.lastName,
     email: user?.email,
     role: user?.role,
   };
 
   const returnUser = {
     _id: user?._id,
-    username: user?.username,
+    firstName: user?.firtsName,
+    lastName: user?.lastName,
     email: user?.email,
     role: user?.role,
   };
@@ -166,7 +173,6 @@ const changePasswordIntoDB = async (
 
   return result;
 };
-
 
 export const UserService = {
   createUserIntoDB,

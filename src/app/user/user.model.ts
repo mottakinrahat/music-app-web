@@ -5,10 +5,13 @@ import config from "../config";
 
 const userSchema = new Schema<TUser, TUserModel>(
   {
-    username: {
+    firtsName: {
       type: String,
       required: true,
-      unique: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
     },
     email: {
       type: String,
@@ -21,7 +24,7 @@ const userSchema = new Schema<TUser, TUserModel>(
     },
     contactNo: {
       type: String,
-      required: true,
+      default: "",
     },
     isDeleted: {
       type: Boolean,

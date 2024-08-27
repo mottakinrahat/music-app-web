@@ -4,7 +4,8 @@ import { USER_ROLE } from "./user.constant";
 
 // user interface
 export interface TUser {
-  username: string;
+  firtsName: string;
+  lastName: string;
   email: string;
   password: string;
   contactNo: string;

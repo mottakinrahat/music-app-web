@@ -4,6 +4,15 @@ import { TArtist } from "./artist.interface";
 import { Artist } from "./artist.model";
 
 const createArtistIntoDB = async (payload: TArtist) => {
+  const email = payload.email;
+  const existEmail = await Artist.find({ email });
+  if (existEmail) {
+    throw new AppError(
+      httpStatus.FOUND,
+      "this email already registered as a artist!"
+    );
+  }
+
   const result = await Artist.create(payload);
   return result;
 };
