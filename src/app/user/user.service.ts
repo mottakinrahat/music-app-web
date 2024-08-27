@@ -44,7 +44,7 @@ const createUserIntoDB = async (payload: TUser) => {
 
   const returnUser = {
     _id: result._id,
-    firstName: result?.firtsName,
+    firstName: result?.firstName,
     lastName: result?.lastName,
     email: result?.email,
     role: result?.role,
@@ -72,7 +72,7 @@ const loginUser = async (payload: TLoginUser) => {
 
   const jwtPayload = {
     _id: user._id,
-    firstName: user?.firtsName,
+    firstName: user?.firstName,
     lastName: user?.lastName,
     email: user?.email,
     role: user?.role,
@@ -80,7 +80,7 @@ const loginUser = async (payload: TLoginUser) => {
 
   const returnUser = {
     _id: user?._id,
-    firstName: user?.firtsName,
+    firstName: user?.firstName,
     lastName: user?.lastName,
     email: user?.email,
     role: user?.role,

@@ -5,7 +5,7 @@ import config from "../config";
 
 const userSchema = new Schema<TUser, TUserModel>(
   {
-    firtsName: {
+    firstName: {
       type: String,
       required: true,
     },

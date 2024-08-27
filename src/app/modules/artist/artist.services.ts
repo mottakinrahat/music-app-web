@@ -5,10 +5,10 @@ import { Artist } from "./artist.model";
 
 const createArtistIntoDB = async (payload: TArtist) => {
   const email = payload.email;
-  const existEmail = await Artist.find({ email });
+  const existEmail = await Artist.findOne({ email: email });
   if (existEmail) {
     throw new AppError(
-      httpStatus.FOUND,
+      httpStatus.BAD_REQUEST,
       "this email already registered as a artist!"
     );
   }

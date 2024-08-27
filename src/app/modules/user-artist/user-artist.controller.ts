@@ -6,34 +6,53 @@ import { userArtistService } from "./user-artist.services";
 
 const createUserArtist = catchAsync(async (req, res) => {
   const { role } = req.params;
+  const { email } = req.body;
+  let createdEntity;
+  let userRef;
+
   if (role === "artist") {
-    const createdArtist = await artistServices.createArtistIntoDB(req.body);
-
-    await userArtistService.createUserArtistIntoDB(
-      createdArtist._id.toString()
-    );
-
-    sendResponse(res, {
-      success: true,
-      statusCode: 201,
-      message: "aritst created successfully",
-      data: createdArtist,
-    });
+    createdEntity = await artistServices.createArtistIntoDB(req.body);
+    userRef = "Artist";
   } else if (role === "user") {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const createdUser: any = await UserService.createUserIntoDB(req.body);
+    createdEntity = await UserService.createUserIntoDB(req.body);
+    userRef = "User";
+  }
 
-    await userArtistService.createUserArtistIntoDB(createdUser._id.toString());
+  if (createdEntity) {
+    // Pass both userId and userRef to the userArtistService
+    await userArtistService.createUserArtistIntoDB({
+      userId: createdEntity._id,
+      userRef,
+      email,
+    });
 
     sendResponse(res, {
       success: true,
       statusCode: 201,
-      message: "aritst created successfully",
-      data: createdUser,
+      message: `${role} created successfully`,
+      data: createdEntity,
+    });
+  } else {
+    sendResponse(res, {
+      success: false,
+      statusCode: 400,
+      message: "Invalid role specified",
+      data: {},
     });
   }
 });
 
+const getUserArtist = catchAsync(async (req, res) => {
+  const result = await userArtistService.getUserArtistIntoDB();
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "user artist successfully retrived",
+    data: result?.userId,
+  });
+});
+
 export const UserArtistController = {
   createUserArtist,
+  getUserArtist,
 };

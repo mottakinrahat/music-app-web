@@ -3,13 +3,15 @@ import { TUserArtist } from "./user-artist.interface";
 
 const userArtistSchema = new Schema<TUserArtist>(
   {
-    userId: [
-      {
-        type: Schema.Types.ObjectId,
-        refPath: "userRef",
-        required: [true, "User/Artist id is required"],
-      },
-    ],
+    email: {
+      type: String,
+      required: true
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      refPath: "userRef",
+      required: [true, "User/Artist id is required"],
+    },
     userRef: {
       type: String,
       required: true,
