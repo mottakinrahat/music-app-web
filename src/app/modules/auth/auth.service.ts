@@ -3,21 +3,21 @@ import httpStatus from "http-status";
 import jwt from "jsonwebtoken";
 import config from "../../config";
 import { TLoginUser } from "./auth.interface";
-import { UserModel } from "../../user/user.model";
 import AppError from "../../utils/AppError";
+import { UserArtist } from "../user-artist/user-artist.model";
 
 const loginUser = async (payload: TLoginUser) => {
   const { email, password } = payload;
 
-  const user = await UserModel.findOne({ email });
+  const user = await UserArtist.findOne({ email });
 
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, ` User not found `);
   }
-  const isDeleted = user?.isDeleted;
-  if (isDeleted) {
-    throw new AppError(httpStatus.FORBIDDEN, "User is deleted");
-  }
+  // const isDeleted = user?.isDeleted;
+  // if (isDeleted) {
+  //   throw new AppError(httpStatus.FORBIDDEN, "User is deleted");
+  // }
 
   // Compare the provided password
   const passwordMatch = await bcrypt.compare(password, user.password);
@@ -27,7 +27,7 @@ const loginUser = async (payload: TLoginUser) => {
   }
 
   const jwtPayload = {
-    _id: user._id,
+    _id: user.userId,
     firstName: user?.firstName,
     lastName: user?.lastName,
     email: user?.email,
@@ -35,7 +35,7 @@ const loginUser = async (payload: TLoginUser) => {
   };
 
   const returnUser = {
-    _id: user?._id,
+    _id: user?.userId,
     firstName: user?.firstName,
     lastName: user?.lastName,
     email: user?.email,

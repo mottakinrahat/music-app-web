@@ -6,37 +6,42 @@ import { userArtistService } from "./user-artist.services";
 
 const createUserArtist = catchAsync(async (req, res) => {
   const { role } = req.params;
-  const { email } = req.body;
+  const { firstName, lastName, email, password } = req.body;
   let createdEntity;
   let userRef;
 
   if (role === "artist") {
     createdEntity = await artistServices.createArtistIntoDB(req.body);
     userRef = "Artist";
-    await userArtistService.createUserArtistIntoDB({
-      userId: createdEntity._id,
-      userRef,
-      email,
-    });
-    sendResponse(res, {
-      success: true,
-      statusCode: 201,
-      message: `${role} created successfully`,
-      data: createdEntity,
-    });
   } else if (role === "user") {
     createdEntity = await UserService.createUserIntoDB(req.body);
     userRef = "User";
+  }
+
+  if (createdEntity) {
+    // Pass both userId and userRef to the userArtistService
     await userArtistService.createUserArtistIntoDB({
+      firstName,
+      lastName,
       userId: createdEntity._id,
       userRef,
       email,
+      password,
+      role,
     });
+
     sendResponse(res, {
       success: true,
       statusCode: 201,
       message: `${role} created successfully`,
       data: createdEntity,
+    });
+  } else {
+    sendResponse(res, {
+      success: false,
+      statusCode: 400,
+      message: "Invalid role specified",
+      data: {},
     });
   }
 });
