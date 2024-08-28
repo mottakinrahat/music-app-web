@@ -6,6 +6,12 @@ import { TLoginUser } from "./auth.interface";
 import AppError from "../../utils/AppError";
 import { UserArtist } from "../user-artist/user-artist.model";
 
+interface JwtPayload {
+  email: string;
+  iat?: number;
+  exp?: number;
+}
+
 const loginUser = async (payload: TLoginUser) => {
   const { email, password } = payload;
 
@@ -157,6 +163,41 @@ const loginUser = async (payload: TLoginUser) => {
 //   };
 // };
 
+const forgetPasswordFromDB = async (email: string) => {
+  const user = await UserArtist.findOne({ email: email });
+  if (!user) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      `user not found with this ${email}`
+    );
+  }
+
+  return user;
+};
+
+const resetPasswordFromDB = async (payload: any) => {
+  const { token, newPassword } = payload;
+
+  const decoded = jwt.verify(
+    token,
+    config.forget_password_key as string
+  ) as JwtPayload;
+
+  const findEmail = decoded.email;
+
+  const user = await UserArtist.findOne({ email: findEmail });
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  const updates = { password: hashedPassword, new: true };
+
+  // await Artist.findByIdAndUpdate(user?.userId, updates);
+  // await UserModel.findByIdAndUpdate(user?.userId, updates);
+  await UserArtist.findByIdAndUpdate(user?._id, updates);
+};
+
 export const AuthServices = {
   loginUser,
+  forgetPasswordFromDB,
+  resetPasswordFromDB,
 };
