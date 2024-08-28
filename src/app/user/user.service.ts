@@ -176,8 +176,11 @@ const changePasswordIntoDB = async (
 };
 
 const getSingleUserIntoDB = async (userId: string) => {
-  const user = await UserModel.findById(userId).select("-password");
-  return user;
+  const user = await UserArtist.findOne({ userId }).populate({
+    path: "userId",
+    select: "-password",
+  });
+  return user?.userId;
 };
 
 export const UserService = {

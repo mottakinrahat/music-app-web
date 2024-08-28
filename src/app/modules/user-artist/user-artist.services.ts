@@ -17,14 +17,6 @@ const createUserArtistIntoDB = async (payload: Info) => {
   return result;
 };
 
-const getUserArtistIntoDB = async (userId: string) => {
-  const result = await UserArtist.findOne({ userId: userId }).populate(
-    "userId"
-  );
-  return result;
-};
-
 export const userArtistService = {
   createUserArtistIntoDB,
-  getUserArtistIntoDB,
 };

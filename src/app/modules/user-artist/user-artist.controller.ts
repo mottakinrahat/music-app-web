@@ -46,18 +46,6 @@ const createUserArtist = catchAsync(async (req, res) => {
   }
 });
 
-const getUserArtist = catchAsync(async (req, res) => {
-  const { userId } = req.params;
-  const result = await userArtistService.getUserArtistIntoDB(userId);
-  sendResponse(res, {
-    success: true,
-    statusCode: 200,
-    message: "user artist successfully retrived",
-    data: result?.userId,
-  });
-});
-
 export const UserArtistController = {
   createUserArtist,
-  getUserArtist,
 };
