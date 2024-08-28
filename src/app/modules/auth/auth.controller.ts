@@ -6,11 +6,28 @@ import { AuthServices } from "./auth.service";
 const loginUser = catchAsync(async (req, res) => {
   const result = await AuthServices.loginUser(req.body);
 
+  res.cookie("authToken", result.token, {
+    httpOnly: true,
+    //  secure: process.env.NODE_ENV === "production",
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+  });
+
   sendResponse(res, {
     success: true,
     statusCode: 201,
     message: "User logged in successfully",
     data: result,
+  });
+});
+
+const logoutUser = catchAsync(async (req, res) => {
+  res.clearCookie("authToken");
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 201,
+    message: "user logout successfully",
+    data: "",
   });
 });
 
@@ -46,4 +63,5 @@ export const authController = {
   loginUser,
   forgetPassword,
   resetPassword,
+  logoutUser,
 };
