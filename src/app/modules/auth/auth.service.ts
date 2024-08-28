@@ -213,9 +213,17 @@ const resetPasswordFromDB = async (payload: any) => {
     config.forget_password_key as string
   ) as JwtPayload;
 
+  if (!decoded) {
+    throw new AppError(httpStatus.NOT_FOUND, "token is invalid");
+  }
+
   const findEmail = decoded.email;
 
   const user = await UserArtist.findOne({ email: findEmail });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "user not found");
+  }
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
