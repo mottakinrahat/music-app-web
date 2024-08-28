@@ -5,6 +5,8 @@ import config from "../../config";
 import { TLoginUser } from "./auth.interface";
 import AppError from "../../utils/AppError";
 import { UserArtist } from "../user-artist/user-artist.model";
+import { createJSONWebToken } from "../../utils/createToken";
+import { emailWithNodeMail } from "../../utils/email";
 
 interface JwtPayload {
   email: string;
@@ -172,9 +174,37 @@ const forgetPasswordFromDB = async (email: string) => {
     );
   }
 
-  return user;
+  //send email
+  const token = createJSONWebToken(
+    { email },
+    config.forget_password_key as string,
+    "10m"
+  );
+
+  //prepare email
+  const emailData = {
+    email,
+    subject: "Reset password",
+    html: `
+      <h2>Hello ${user.firstName + "" + user.lastName}</h2>
+      <p>Please click here to link <a href="${
+        config.clientUrl
+      }/reset-password/${token}" target="_blank">reset your password</a></p>
+      `,
+  };
+
+  //send email with nodemailer
+  try {
+    await emailWithNodeMail(emailData);
+    return;
+  } catch (error) {
+    throw new AppError(httpStatus.NOT_FOUND, `mail not send ${error}`);
+  }
+
+  return;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const resetPasswordFromDB = async (payload: any) => {
   const { token, newPassword } = payload;
 
@@ -191,8 +221,6 @@ const resetPasswordFromDB = async (payload: any) => {
 
   const updates = { password: hashedPassword, new: true };
 
-  // await Artist.findByIdAndUpdate(user?.userId, updates);
-  // await UserModel.findByIdAndUpdate(user?.userId, updates);
   await UserArtist.findByIdAndUpdate(user?._id, updates);
 };
 
