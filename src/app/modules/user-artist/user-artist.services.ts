@@ -17,9 +17,10 @@ const createUserArtistIntoDB = async (payload: Info) => {
   return result;
 };
 
-const getUserArtistIntoDB = async () => {
-  const email = "ruhulamin.et15@gmail.com";
-  const result = await UserArtist.findOne({ email: email }).populate("userId");
+const getUserArtistIntoDB = async (userId: string) => {
+  const result = await UserArtist.findOne({ userId: userId }).populate(
+    "userId"
+  );
   return result;
 };
 

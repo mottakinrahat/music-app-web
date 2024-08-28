@@ -30,4 +30,6 @@ router.post(
   UserControllers.changePassword
 );
 
+router.get("/:userId", UserControllers.getSingleUser);
+
 export const UserRoutes = router;

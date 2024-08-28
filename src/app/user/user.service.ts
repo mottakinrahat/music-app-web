@@ -175,8 +175,14 @@ const changePasswordIntoDB = async (
   return result;
 };
 
+const getSingleUserIntoDB = async (userId: string) => {
+  const user = await UserModel.findById(userId).select("-password");
+  return user;
+};
+
 export const UserService = {
   createUserIntoDB,
   loginUser,
   changePasswordIntoDB,
+  getSingleUserIntoDB,
 };
