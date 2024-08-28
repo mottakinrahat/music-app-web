@@ -25,18 +25,6 @@ const getAritsts = catchAsync(async (req, res) => {
   });
 });
 
-const getAritst = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const artist = await artistServices.getSingleArtistIntoDB(id);
-
-  sendResponse(res, {
-    success: true,
-    statusCode: 200,
-    message: "artist retrived successfully",
-    data: artist,
-  });
-});
-
 const updateArtist = catchAsync(async (req, res) => {
   const { id } = req.params;
   const updateData = req.body;
@@ -66,7 +54,6 @@ const deletedArtist = catchAsync(async (req, res) => {
 export const artistController = {
   createArtist,
   getAritsts,
-  getAritst,
   updateArtist,
   deletedArtist,
 };

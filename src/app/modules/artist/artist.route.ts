@@ -11,7 +11,6 @@ router.post(
   artistController.createArtist
 );
 router.get("/", artistController.getAritsts);
-router.get("/:id", artistController.getAritst);
 router.put("/:id", artistController.updateArtist);
 router.delete("/:id", artistController.deletedArtist);
 

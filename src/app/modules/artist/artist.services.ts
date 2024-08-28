@@ -27,14 +27,6 @@ const getArtistsIntoDB = async () => {
   return artists;
 };
 
-const getSingleArtistIntoDB = async (id: string) => {
-  const artist = await Artist.findById(id);
-  if (!artist) {
-    throw new AppError(httpStatus.NOT_FOUND, "artist not found!");
-  }
-  return artist;
-};
-
 const updateArtistIntoDB = async (id: string, payload: Partial<TArtist>) => {
   const updatedData = await Artist.findByIdAndUpdate(id, payload, {
     new: true,
@@ -50,7 +42,6 @@ const deleteArtistIntoDB = async (id: string) => {
 export const artistServices = {
   createArtistIntoDB,
   getArtistsIntoDB,
-  getSingleArtistIntoDB,
   updateArtistIntoDB,
   deleteArtistIntoDB,
 };
