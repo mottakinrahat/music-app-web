@@ -41,7 +41,6 @@ const getPlayListByUser = catchAsync(async (req, res) => {
 
 const playlistHandler = catchAsync(async (req, res) => {
   const { id, userId, playlistid } = req.params;
-
   const { ObjectId } = mongoose.Types;
   const userObjectId = new ObjectId(userId);
 

@@ -22,9 +22,7 @@ const getFavouriteSongs = catchAsync(async (req, res) => {
 
 const favHandler = catchAsync(async (req, res) => {
   const { id, userId } = req.params;
-
   const { ObjectId } = mongoose.Types;
-
   const userObjectId = new ObjectId(userId);
 
   const song = await songServices.getSingleSongFromDB(id);

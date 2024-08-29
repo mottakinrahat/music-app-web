@@ -3,6 +3,7 @@ import AppError from "../../utils/AppError";
 import { TSong } from "./song.interface";
 import { Song } from "./song.model";
 import { FilterQuery } from "mongoose";
+import { Album } from "../album/album.model";
 
 export interface ISong extends Document {
   songName: string;
@@ -10,7 +11,16 @@ export interface ISong extends Document {
 }
 
 const createSongIntoDB = async (payload: TSong) => {
+  const { songAlbum } = payload;
   const result = await Song.create(payload);
+
+  const songId = result._id;
+  await Album.findByIdAndUpdate(
+    songAlbum,
+    { $push: { songs: songId } },
+    { new: true }
+  );
+
   return result;
 };
 

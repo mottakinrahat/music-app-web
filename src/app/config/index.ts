@@ -13,4 +13,6 @@ export default {
   clientUrl: process.env.CLIENT_URL,
   smtpPassword: process.env.SMTP_PASSWORD,
   smtpUserName: process.env.SMTP_USER_NAME,
+  encryption_key: process.env.ENCRYPTION_KEY,
+  encryption_iv: process.env.ENCRYPTION_IV,
 };

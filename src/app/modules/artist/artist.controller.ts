@@ -2,18 +2,6 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { artistServices } from "./artist.services";
 
-const createArtist = catchAsync(async (req, res) => {
-  // const { role } = req.params;
-  const artists = await artistServices.createArtistIntoDB(req.body);
-
-  sendResponse(res, {
-    success: true,
-    statusCode: 201,
-    message: "artist is created successfully",
-    data: artists,
-  });
-});
-
 const getAritsts = catchAsync(async (req, res) => {
   const artists = await artistServices.getArtistsIntoDB();
 
@@ -52,7 +40,6 @@ const deletedArtist = catchAsync(async (req, res) => {
 });
 
 export const artistController = {
-  createArtist,
   getAritsts,
   updateArtist,
   deletedArtist,
