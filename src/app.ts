@@ -12,7 +12,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://x-mega-pro-jibon-roy-jibon-roys-projects.vercel.app/login",
+      "https://x-mega-pro-jibon-roy-jibon-roys-projects.vercel.app",
     ],
     credentials: true,
   })
