@@ -10,10 +10,7 @@ const app: Application = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://x-mega-pro-jibon-roy-jibon-roys-projects.vercel.app",
-    ],
+    origin: ["http://localhost:3000", "https://x-mega-pro.vercel.app"],
     credentials: true,
   })
 );
