@@ -55,6 +55,11 @@ const createUserIntoDB = async (payload: TUser) => {
   return returnUser;
 };
 
+const getUsersFromDB = async () => {
+  const users = await UserModel.find().select("-password");
+  return users;
+};
+
 // handle login
 const loginUser = async (payload: TLoginUser) => {
   const { username, password } = payload;
@@ -188,4 +193,5 @@ export const UserService = {
   loginUser,
   changePasswordIntoDB,
   getSingleUserIntoDB,
+  getUsersFromDB,
 };

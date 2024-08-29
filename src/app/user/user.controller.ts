@@ -15,6 +15,16 @@ const loginUser = catchAsync(async (req, res) => {
   });
 });
 
+const getUsers = catchAsync(async (req, res) => {
+  const users = await UserService.getUsersFromDB();
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "users return successfully",
+    data: users,
+  });
+});
+
 // chang user password
 const changePassword = catchAsync(async (req, res) => {
   try {
@@ -58,4 +68,5 @@ export const UserControllers = {
   loginUser,
   changePassword,
   getSingleUser,
+  getUsers,
 };
