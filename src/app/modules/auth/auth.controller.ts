@@ -6,15 +6,9 @@ import { AuthServices } from "./auth.service";
 const loginUser = catchAsync(async (req, res) => {
   const result = await AuthServices.loginUser(req.body);
 
-  res.cookie("authToken", result.token, {
-    httpOnly: true,
-    //  secure: process.env.NODE_ENV === "production",
-    maxAge: 24 * 60 * 60 * 1000, // 1 day
-  });
-
   sendResponse(res, {
     success: true,
-    statusCode: 201,
+    statusCode: 200,
     message: "User logged in successfully",
     data: result,
   });
