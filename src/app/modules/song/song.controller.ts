@@ -1,8 +1,3 @@
-import fs from "fs";
-import path from "path";
-import crypto from "crypto";
-import { Buffer } from "buffer";
-
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
@@ -11,7 +6,6 @@ import { songServices } from "./song.services";
 import { Song } from "./song.model";
 import mongoose from "mongoose";
 import { Favourite } from "../favList/favourite.model";
-import config from "../../config";
 
 const createSong = catchAsync(async (req, res) => {
   const result = await songServices.createSongIntoDB(req.body);
@@ -355,92 +349,93 @@ const playListHandler = catchAsync(async (req, res) => {
   }
 });
 
-const downLoadAudio = catchAsync(async (req, res) => {
-  const { fileId } = req.params;
-  const objectId = new mongoose.Types.ObjectId(fileId as string);
+// const downLoadAudio = catchAsync(async (req, res) => {
+//   const { fileId } = req.params;
+//   const objectId = new mongoose.Types.ObjectId(fileId as string);
 
-  // Validate user access to the file (authentication, authorization)
+//   // Validate user access to the file (authentication, authorization)
 
-  // Path to the encrypted file
-  const encryptedFilePath = path.join(
-    process.cwd(),
-    "encrypted_files",
-    `${objectId}.enc`
-  );
+//   // Path to the encrypted file
+//   const encryptedFilePath = path.join(
+//     process.cwd(),
+//     "encrypted_files",
+//     `${objectId}.enc`
+//   );
 
-  // Define the temporary path for the decrypted file
-  const decryptedFilePath = path.join(
-    "C:", // Ensure this directory exists or create it
-    "temp_files", // Ensure this directory exists or create it
-    `${objectId}.mp3`
-  );
+//   // Define the temporary path for the decrypted file
+//   const decryptedFilePath = path.join(
+//     "C:", // Ensure this directory exists or create it
+//     "temp_files", // Ensure this directory exists or create it
+//     `${objectId}.mp3`
+//   );
 
-  // Ensure the temporary directory exists
-  const tempDir = path.dirname(decryptedFilePath);
-  if (!fs.existsSync(tempDir)) {
-    fs.mkdirSync(tempDir, { recursive: true });
-  }
+//   // Ensure the temporary directory exists
+//   const tempDir = path.dirname(decryptedFilePath);
+//   if (!fs.existsSync(tempDir)) {
+//     fs.mkdirSync(tempDir, { recursive: true });
+//   }
 
-  // Encryption key and initialization vector
-  const key = Buffer.from(config.encryption_key as string, "hex");
-  const iv = Buffer.from(config.encryption_iv as string, "hex");
+//   // Encryption key and initialization vector
+//   const key = Buffer.from(config.encryption_key as string, "hex");
+//   const iv = Buffer.from(config.encryption_iv as string, "hex");
 
-  // Validate key and IV lengths
-  if (key.length !== 32) {
-    return sendResponse(res, {
-      success: false,
-      statusCode: 500,
-      message: "Invalid Encryption Key",
-      data: "Encryption key must be 32 bytes long.",
-    });
-  }
-  if (iv.length !== 16) {
-    return sendResponse(res, {
-      success: false,
-      statusCode: 500,
-      message: "Invalid Initialization Vector",
-      data: "IV must be 16 bytes long.",
-    });
-  }
+//   // Validate key and IV lengths
+//   if (key.length !== 32) {
+//     return sendResponse(res, {
+//       success: false,
+//       statusCode: 500,
+//       message: "Invalid Encryption Key",
+//       data: "Encryption key must be 32 bytes long.",
+//     });
+//   }
+//   if (iv.length !== 16) {
+//     return sendResponse(res, {
+//       success: false,
+//       statusCode: 500,
+//       message: "Invalid Initialization Vector",
+//       data: "IV must be 16 bytes long.",
+//     });
+//   }
 
-  const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
-  const input = fs.createReadStream(encryptedFilePath);
-  const output = fs.createWriteStream(decryptedFilePath);
+//   // Decrypt the file
+//   const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
+//   const input = fs.createReadStream(encryptedFilePath);
+//   const output = fs.createWriteStream(decryptedFilePath);
 
-  input.pipe(decipher).pipe(output);
+//   input.pipe(decipher).pipe(output);
 
-  output.on("finish", () => {
-    // After the file is decrypted and saved, send the file to the client
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${objectId}.mp3"`
-    );
-    res.setHeader("Content-Type", "audio/mpeg");
-    const decryptedStream = fs.createReadStream(decryptedFilePath);
-    decryptedStream.pipe(res);
+//   output.on("finish", () => {
+//     // After the file is decrypted and saved, send the file to the client
+//     res.setHeader(
+//       "Content-Disposition",
+//       `attachment; filename="${objectId}.mp3"`
+//     );
+//     res.setHeader("Content-Type", "audio/mpeg");
+//     const decryptedStream = fs.createReadStream(decryptedFilePath);
+//     decryptedStream.pipe(res);
 
-    // Clean up the temporary file after sending
-    decryptedStream.on("end", () => {
-      fs.unlinkSync(decryptedFilePath); // Remove the file after sending
-    });
-  });
+//     // Clean up the temporary file after sending
+//     decryptedStream.on("end", () => {
+//       fs.unlinkSync(decryptedFilePath); // Remove the file after sending
+//     });
+//   });
 
-  sendResponse(res, {
-    success: true,
-    statusCode: 200,
-    message: "success",
-    data: "done",
-  });
+//   sendResponse(res, {
+//     success: true,
+//     statusCode: 200,
+//     message: "success",
+//     data: "success",
+//   });
 
-  output.on("error", (err) => {
-    sendResponse(res, {
-      success: false,
-      statusCode: 500,
-      message: "Internal Server Error",
-      data: err,
-    });
-  });
-});
+//   output.on("error", (err) => {
+//     sendResponse(res, {
+//       success: false,
+//       statusCode: 500,
+//       message: "Internal Server Error",
+//       data: err,
+//     });
+//   });
+// });
 
 export const songController = {
   createSong,
@@ -450,5 +445,4 @@ export const songController = {
   getDurationByLyrics,
   favHandler,
   playListHandler,
-  downLoadAudio,
 };
