@@ -30,7 +30,12 @@ const getSongFromDB = async (
   skip: number
 ) => {
   const results = await Song.find(filter)
-    .populate("songAlbum")
+    .populate({
+      path: "songAlbum",
+      populate: {
+        path: "artistId",
+      },
+    })
     .populate("category")
     .limit(limit)
     .skip(skip);
