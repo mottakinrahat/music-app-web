@@ -34,6 +34,7 @@ const getSongFromDB = async (
       path: "songAlbum",
       populate: {
         path: "artistId",
+        select: "-password",
       },
     })
     .populate("category")
