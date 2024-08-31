@@ -15,6 +15,7 @@ export interface TSong {
   songDuration: string;
   releaseYear: number;
   genre: string;
+  bpm: number;
   category: ObjectId;
   lyrics: Lyric[];
   favUsers: ObjectId;

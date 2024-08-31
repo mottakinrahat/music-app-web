@@ -38,6 +38,10 @@ const songSchema = new Schema<TSong>(
       type: Number,
       required: [true, "releaseYear is required"],
     },
+    bpm: {
+      type: Number,
+      required: [true, "Song BPM is required"],
+    },
     genre: {
       type: String,
       required: [true, "genre is required"],

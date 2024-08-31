@@ -12,6 +12,10 @@ export const songValidationSchema = z.object({
   songArtist: z.string().nonempty({ message: "songArtist is required" }),
   songAlbum: z.string().nonempty({ message: "songAlbum is required" }),
   songDuration: z.string().nonempty({ message: "songDuration is required" }),
+  bpm: z
+    .number()
+    .min(1, { message: "BPM minmum value is 1" })
+    .max(300, { message: "BPM maxmimum value is 300" }),
   releaseYear: z
     .number()
     .int()
