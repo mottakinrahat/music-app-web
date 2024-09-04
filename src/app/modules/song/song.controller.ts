@@ -6,17 +6,61 @@ import { songServices } from "./song.services";
 import { Song } from "./song.model";
 import mongoose from "mongoose";
 import { Favourite } from "../favList/favourite.model";
+import axios from "axios";
 
+// Replace with your Audd.io API key
+const AUDD_API_KEY = "53dc0bed3486ce51fdcaa7e5960e7aad";
+
+// Function to calculate BPM using an external service
+const calculateBpmFromSong = async (songLink: string): Promise<number> => {
+  try {
+    // Send request to Audd.io API to analyze the song
+    const response = await axios.post("https://api.audd.io/", {
+      api_token: AUDD_API_KEY,
+      url: songLink,
+      return: "tempo",
+    });
+
+    // Extract the BPM from the response data
+    const bpm = response.data.result.tempo;
+
+    // Return the BPM value or handle it if not available
+    if (bpm) {
+      return bpm;
+    } else {
+      throw new Error("BPM could not be detected");
+    }
+  } catch (error) {
+    throw new Error("Failed to calculate BPM from the song link.");
+  }
+};
+
+// Controller to create a new song
 const createSong = catchAsync(async (req, res) => {
-  const result = await songServices.createSongIntoDB(req.body);
+  const { songLink } = req.body as { songLink: string };
 
+  // Calculate BPM from the song link using external service
+  const bpm = await calculateBpmFromSong(songLink);
+
+  // Prepare data to create the song with BPM
+  const songData = {
+    ...req.body,
+    bpm, // Add the calculated BPM to the song data
+  };
+
+  // Save song data to the database
+  const result = await songServices.createSongIntoDB(songData);
+
+  // Send response back to the client
   sendResponse(res, {
     success: true,
-    statusCode: 201,
+    statusCode: httpStatus.CREATED,
     message: "Song is created successfully",
     data: result,
   });
 });
+
+export { createSong };
 
 const getAllSong = catchAsync(async (req, res) => {
   const page = Number(req.query.page);
@@ -80,6 +124,7 @@ const getSongsByCategory = catchAsync(async (req, res) => {
   });
 });
 
+//dynamic
 // const getDurationByLyrics = catchAsync(async (req, res) => {
 //   const { id } = req.params;
 //   const timeQuery = req.query.time;
@@ -136,6 +181,7 @@ const getSongsByCategory = catchAsync(async (req, res) => {
 //   });
 // });
 
+//fixed
 const getDurationByLyrics = catchAsync(async (req, res) => {
   const { id } = req.params;
 

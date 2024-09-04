@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/nodemailer": "^6.4.15",
+    "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.2.0",
     "cors": "^2.8.5",
