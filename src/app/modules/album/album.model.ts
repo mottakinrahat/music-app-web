@@ -8,27 +8,39 @@ const albumSchema = new Schema<TAlbum>(
       type: String,
       required: [true, "album name is required"],
     },
-    albumImage: {
-      type: String,
-      required: [true, "album image is required"],
+    previouslyReleased: {
+      type: Boolean,
+      default: false,
     },
     artistId: {
       type: Schema.Types.ObjectId,
       ref: "Artist",
-      required: [true, "please select artist name"],
+      required: [true, "artist name is required"],
+    },
+    label: {
+      type: String,
+      required: [true, "Name of the record laebl is required"],
+    },
+    genre: {
+      type: String,
+      required: [true, "genre is required"],
+    },
+    subGenre: {
+      type: String,
+      required: [true, "sub-genre is required"],
     },
     releasedDate: {
       type: Date,
-      required: [true, "released date is required"],
+      default: Date.now(),
+    },
+    isReleased: {
+      type: Boolean,
+      default: false,
     },
     songs: {
       type: Array,
       ref: "Song",
       default: [],
-    },
-    genre: {
-      type: String,
-      required: [true, "genre is required"],
     },
   },
   {

@@ -81,117 +81,115 @@ const getSongsByCategory = catchAsync(async (req, res) => {
 });
 
 //dynamic
-// const getDurationByLyrics = catchAsync(async (req, res) => {
-//   const { id } = req.params;
-//   const timeQuery = req.query.time;
-
-//   const timeToSeconds = (timeStr: string): number => {
-//     const [hours, minutes, seconds] = timeStr.split(":").map(Number);
-//     return hours * 3600 + minutes * 60 + seconds;
-//   };
-
-//   const searchTime =
-//     typeof timeQuery === "string" ? parseFloat(timeQuery) : NaN;
-
-//   if (isNaN(searchTime)) {
-//     return res
-//       .status(400)
-//       .json({ message: "Invalid or missing time parameter" });
-//   }
-
-//   const song = await songServices.getSingleSongFromDB(id);
-
-//   if (!song) {
-//     sendResponse(res, {
-//       success: false,
-//       statusCode: 404,
-//       message: "song not found",
-//       data: {},
-//     });
-//   }
-
-//   const lyrics = song?.lyrics || [];
-
-//   // Find the lyric line that covers the specified time
-//   const lyricLine = lyrics.find((lyric) => {
-//     const lyricStart = timeToSeconds(lyric.startTime);
-//     const lyricEnd = timeToSeconds(lyric.endTime);
-//     return lyricStart <= searchTime && lyricEnd >= searchTime;
-//   });
-
-//   if (!lyricLine) {
-//     return sendResponse(res, {
-//       success: false,
-//       statusCode: 404,
-//       message: "No lyric found for the specified time",
-//       data: {},
-//     });
-//   }
-
-//   // Send the response with the found lyric line
-//   return sendResponse(res, {
-//     success: true,
-//     statusCode: 200,
-//     message: "Lyric found successfully",
-//     data: lyricLine,
-//   });
-// });
-
-//fixed
 const getDurationByLyrics = catchAsync(async (req, res) => {
-  const { id } = req.params;
+  const { id, time } = req.params;
 
   const timeToSeconds = (timeStr: string): number => {
     const [hours, minutes, seconds] = timeStr.split(":").map(Number);
     return hours * 3600 + minutes * 60 + seconds;
   };
 
-  const fixedRanges = [
-    { start: timeToSeconds("00:00:10"), end: timeToSeconds("00:00:15") }, // First line
-    { start: timeToSeconds("00:00:16"), end: timeToSeconds("00:00:20") }, // Second line
-    // { start: timeToSeconds("00:00:21"), end: timeToSeconds("00:00:25") }, // 3rd line
-  ];
+  const searchTime = typeof time === "string" ? parseFloat(time) : NaN;
+
+  if (isNaN(searchTime)) {
+    return res
+      .status(400)
+      .json({ message: "Invalid or missing time parameter" });
+  }
 
   const song = await songServices.getSingleSongFromDB(id);
 
   if (!song) {
-    return sendResponse(res, {
+    sendResponse(res, {
       success: false,
       statusCode: 404,
-      message: "Song not found",
+      message: "song not found",
       data: {},
     });
   }
 
   const lyrics = song?.lyrics || [];
 
-  const filteredLyrics = fixedRanges.map((range) => {
-    return lyrics.find((lyric) => {
-      const lyricStart = timeToSeconds(lyric.startTime);
-      const lyricEnd = timeToSeconds(lyric.endTime);
-      return lyricStart >= range.start && lyricEnd <= range.end;
-    });
+  // Find the lyric line that covers the specified time
+  const lyricLine = lyrics.find((lyric) => {
+    const lyricStart = timeToSeconds(lyric.startTime);
+    const lyricEnd = timeToSeconds(lyric.endTime);
+    return lyricStart <= searchTime && lyricEnd >= searchTime;
   });
 
-  if (filteredLyrics.every((lyric) => lyric === undefined)) {
+  if (!lyricLine) {
     return sendResponse(res, {
       success: false,
       statusCode: 404,
-      message: "No lyrics found for the specified time ranges",
+      message: "No lyric found for the specified time",
       data: {},
     });
   }
 
+  // Send the response with the found lyric line
   return sendResponse(res, {
     success: true,
     statusCode: 200,
-    message: "Lyrics found successfully",
-    data: {
-      lyrics,
-      song,
-    },
+    message: "Lyric found successfully",
+    data: lyricLine,
   });
 });
+
+//fixed
+// const getDurationByLyrics = catchAsync(async (req, res) => {
+//   const { id } = req.params;
+
+//   const timeToSeconds = (timeStr: string): number => {
+//     const [hours, minutes, seconds] = timeStr.split(":").map(Number);
+//     return hours * 3600 + minutes * 60 + seconds;
+//   };
+
+//   const fixedRanges = [
+//     { start: timeToSeconds("00:00:10"), end: timeToSeconds("00:00:15") }, // First line
+//     { start: timeToSeconds("00:00:16"), end: timeToSeconds("00:00:20") }, // Second line
+//     // { start: timeToSeconds("00:00:21"), end: timeToSeconds("00:00:25") }, // 3rd line
+//   ];
+
+//   const song = await songServices.getSingleSongFromDB(id);
+
+//   if (!song) {
+//     return sendResponse(res, {
+//       success: false,
+//       statusCode: 404,
+//       message: "Song not found",
+//       data: {},
+//     });
+//   }
+
+//   const lyrics = song?.lyrics || [];
+
+//   const filteredLyrics = fixedRanges.map((range) => {
+//     return lyrics.find((lyric) => {
+//       const lyricStart = timeToSeconds(lyric.startTime);
+//       const lyricEnd = timeToSeconds(lyric.endTime);
+//       return lyricStart >= range.start && lyricEnd <= range.end;
+//     });
+//   });
+
+//   if (filteredLyrics.every((lyric) => lyric === undefined)) {
+//     return sendResponse(res, {
+//       success: false,
+//       statusCode: 404,
+//       message: "No lyrics found for the specified time ranges",
+//       data: {},
+//     });
+//   }
+
+//   return sendResponse(res, {
+//     success: true,
+//     statusCode: 200,
+//     message: "Lyrics found successfully",
+//     data: {
+//       lyrics,
+//       song,
+//     },
+//   });
+// });
 
 const favHandler = catchAsync(async (req, res) => {
   const { id, userId } = req.params;
@@ -350,94 +348,6 @@ const playListHandler = catchAsync(async (req, res) => {
     });
   }
 });
-
-// const downLoadAudio = catchAsync(async (req, res) => {
-//   const { fileId } = req.params;
-//   const objectId = new mongoose.Types.ObjectId(fileId as string);
-
-//   // Validate user access to the file (authentication, authorization)
-
-//   // Path to the encrypted file
-//   const encryptedFilePath = path.join(
-//     process.cwd(),
-//     "encrypted_files",
-//     `${objectId}.enc`
-//   );
-
-//   // Define the temporary path for the decrypted file
-//   const decryptedFilePath = path.join(
-//     "C:", // Ensure this directory exists or create it
-//     "temp_files", // Ensure this directory exists or create it
-//     `${objectId}.mp3`
-//   );
-
-//   // Ensure the temporary directory exists
-//   const tempDir = path.dirname(decryptedFilePath);
-//   if (!fs.existsSync(tempDir)) {
-//     fs.mkdirSync(tempDir, { recursive: true });
-//   }
-
-//   // Encryption key and initialization vector
-//   const key = Buffer.from(config.encryption_key as string, "hex");
-//   const iv = Buffer.from(config.encryption_iv as string, "hex");
-
-//   // Validate key and IV lengths
-//   if (key.length !== 32) {
-//     return sendResponse(res, {
-//       success: false,
-//       statusCode: 500,
-//       message: "Invalid Encryption Key",
-//       data: "Encryption key must be 32 bytes long.",
-//     });
-//   }
-//   if (iv.length !== 16) {
-//     return sendResponse(res, {
-//       success: false,
-//       statusCode: 500,
-//       message: "Invalid Initialization Vector",
-//       data: "IV must be 16 bytes long.",
-//     });
-//   }
-
-//   // Decrypt the file
-//   const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
-//   const input = fs.createReadStream(encryptedFilePath);
-//   const output = fs.createWriteStream(decryptedFilePath);
-
-//   input.pipe(decipher).pipe(output);
-
-//   output.on("finish", () => {
-//     // After the file is decrypted and saved, send the file to the client
-//     res.setHeader(
-//       "Content-Disposition",
-//       `attachment; filename="${objectId}.mp3"`
-//     );
-//     res.setHeader("Content-Type", "audio/mpeg");
-//     const decryptedStream = fs.createReadStream(decryptedFilePath);
-//     decryptedStream.pipe(res);
-
-//     // Clean up the temporary file after sending
-//     decryptedStream.on("end", () => {
-//       fs.unlinkSync(decryptedFilePath); // Remove the file after sending
-//     });
-//   });
-
-//   sendResponse(res, {
-//     success: true,
-//     statusCode: 200,
-//     message: "success",
-//     data: "success",
-//   });
-
-//   output.on("error", (err) => {
-//     sendResponse(res, {
-//       success: false,
-//       statusCode: 500,
-//       message: "Internal Server Error",
-//       data: err,
-//     });
-//   });
-// });
 
 export const songController = {
   createSong,
