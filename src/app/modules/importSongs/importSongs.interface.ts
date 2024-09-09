@@ -2,6 +2,6 @@ import { ObjectId } from "mongoose";
 
 export interface TImportSongs {
   songName: string;
-  userId: ObjectId;
+  userId: ObjectId | string;
   songLink: string;
 }

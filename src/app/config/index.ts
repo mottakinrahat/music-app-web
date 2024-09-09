@@ -18,4 +18,5 @@ export default {
   encryption_key: process.env.ENCRYPTION_KEY,
   encryption_iv: process.env.ENCRYPTION_IV,
   importSongsDir: `${currentPath}/public/importSongs`,
+  apiLink: process.env.API_LINK,
 };

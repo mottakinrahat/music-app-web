@@ -5,6 +5,7 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import path from "path";
 import { ImportSong } from "./importSongs.model";
+import { importSongService } from "./importSongs.service";
 
 const importSongsDir = path.resolve(config.importSongsDir);
 
@@ -14,11 +15,11 @@ const importSongs = catchAsync(async (req, res) => {
 
   const newSong = {
     songName: file.filename,
-    songLink: `http://localhost:5000/api/v1/importSongs/${file.filename}`,
+    songLink: `${config.apiLink}/api/v1/importSongs/${file.filename}`,
     userId: userId,
   };
 
-  const importedSong = await ImportSong.create(newSong);
+  const importedSong = await importSongService.createImportSong(newSong);
 
   sendResponse(res, {
     success: true,
@@ -69,8 +70,8 @@ const getImportSongsByUserId = catchAsync(async (req, res) => {
 //   });
 // });
 
-
 //all songs streaming working for this controller
+
 const streamSong = catchAsync(async (req, res) => {
   const { fileName } = req.params;
   const filePath = path.join(importSongsDir, fileName);
@@ -84,8 +85,6 @@ const streamSong = catchAsync(async (req, res) => {
 
     const readStream = fs.createReadStream(filePath);
     readStream.pipe(res);
-  } else {
-    console.log("streaming error");
   }
 });
 
