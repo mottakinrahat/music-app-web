@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
 import path from "path";
 
+const currentPath = process.cwd();
+
 dotenv.config({ path: path.join((process.cwd(), ".env")) });
 export default {
   NODE_ENV: process.env.NODE_ENV,
@@ -15,4 +17,5 @@ export default {
   smtpUserName: process.env.SMTP_USER_NAME,
   encryption_key: process.env.ENCRYPTION_KEY,
   encryption_iv: process.env.ENCRYPTION_IV,
+  importSongsDir: `${currentPath}/public/importSongs`,
 };

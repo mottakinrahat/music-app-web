@@ -1,0 +1,17 @@
+import express from "express";
+import { importSongsController } from "./importSongs.controller";
+import { upload } from "../../middleware/importSongs";
+import ensureDirectoryExists from "../../middleware/insureDirectoryExist";
+
+const router = express.Router();
+
+router.post(
+  "/:userId",
+  ensureDirectoryExists,
+  upload.single("songFile"),
+  importSongsController.importSongs
+);
+
+router.get("/", importSongsController.getAllImportedSongs);
+
+export const importSongsRoute = router;
