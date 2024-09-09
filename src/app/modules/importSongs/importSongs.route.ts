@@ -12,7 +12,7 @@ router.post(
   importSongsController.importSongs
 );
 
-router.get("/", importSongsController.getAllImportedSongs);
+// router.get("/", importSongsController.getAllImportedSongs);
 router.get("/:fileName", importSongsController.streamSong);
 router.get("/mysongs/:userId", importSongsController.getImportSongsByUserId);
 
