@@ -13,5 +13,7 @@ router.post(
 );
 
 router.get("/", importSongsController.getAllImportedSongs);
+router.get("/:fileName", importSongsController.streamSong);
+router.get("/mysongs/:userId", importSongsController.getImportSongsByUserId);
 
 export const importSongsRoute = router;

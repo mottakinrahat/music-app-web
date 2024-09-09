@@ -14,9 +14,8 @@ const storage = multer.diskStorage({
     cb(null, path.resolve(config.importSongsDir)); // Ensure it's an absolute path
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     const sanitizedFilename = path.basename(file.originalname); // Ensure it's safe to use
-    cb(null, `${uniqueSuffix}-${sanitizedFilename}`);
+    cb(null, `${sanitizedFilename}`);
   },
 });
 
