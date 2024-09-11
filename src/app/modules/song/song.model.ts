@@ -11,6 +11,9 @@ const songSchema = new Schema<TSong>({
     type: String,
     required: [true, "songArtist is required"],
   },
+  songImage: {
+    type: String,
+  },
   songAlbum: {
     type: Schema.Types.ObjectId,
     ref:"Album",

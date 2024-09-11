@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "start:prod": "node ./dist/src/server.js",
-    "build": "tsc",
+    "start:dev": "node init && ts-node-dev --respawn --transpile-only src/server.ts",
+    "start:prod": "node init && node ./dist/src/server.js",
+    "build": "node init && tsc",
     "lint": "eslint src --ignore-path .eslintignore --ext .ts",
     "lint-fix": "npx eslint src --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,6 +23,7 @@
     "http-status": "^1.7.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.0",
+    "node-fetch": "^3.3.2",
     "vercel": "^35.2.4",
     "zod": "^3.22.4"
   },
