@@ -1,12 +1,24 @@
 import { ObjectId } from "mongoose";
 
+interface Lyric {
+  startTime: string;
+  endTime: string;
+  line: string;
+}
+
 export interface TSong {
   songName: string;
+  artwork: string;
   songArtist: string;
-  songImage:string;
-  songLink:string;
+  songLink: string;
   songAlbum: ObjectId;
   songDuration: string;
   releaseYear: number;
   genre: string;
+  bpm: number;
+  category: ObjectId;
+  lyrics: Lyric[];
+  favUsers: ObjectId;
+  playListUsers: ObjectId;
+  album: ObjectId;
 }

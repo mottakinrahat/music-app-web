@@ -1,14 +1,17 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
-import { TUser, TUserModel } from "./user.interface";
+import { TUser } from "./user.interface";
 import config from "../config";
 
-const userSchema = new Schema<TUser, TUserModel>(
+const userSchema = new Schema<TUser>(
   {
-    username: {
+    firstName: {
       type: String,
       required: true,
-      unique: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
     },
     email: {
       type: String,
@@ -21,7 +24,7 @@ const userSchema = new Schema<TUser, TUserModel>(
     },
     contactNo: {
       type: String,
-      required: true,
+      default: "",
     },
     isDeleted: {
       type: Boolean,
@@ -57,4 +60,4 @@ userSchema.statics.isPasswordMatched = async function (
   return await bcrypt.compare(plainTextPassword, hashedPassword);
 };
 
-export const UserModel = model<TUser, TUserModel>("User", userSchema);
+export const UserModel = model<TUser>("User", userSchema);
