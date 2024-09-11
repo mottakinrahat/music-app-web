@@ -1,4 +1,3 @@
-import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { AlbumServices } from "./album.services";
@@ -13,25 +12,30 @@ const createAlbum = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
 const getAllAlbum = catchAsync(async (req, res) => {
-  const result = await AlbumServices.getAlbumFromDB();
+  const results = await AlbumServices.getAlbumFromDB();
+
   sendResponse(res, {
-    statusCode: httpStatus.OK,
+    statusCode: 200,
     success: true,
     message: "Albums are retrieved successfully",
-    data: result,
+    data: results,
   });
 });
+
 const getSingleAlbum = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await AlbumServices.getSingleAlbumFromDB(id);
+
   sendResponse(res, {
-    statusCode: httpStatus.OK,
+    statusCode: 200,
     success: true,
-    message: "album is retrieved successfully",
+    message: "Album retrieved successfully",
     data: result,
   });
 });
+
 export const albumController = {
   createAlbum,
   getAllAlbum,

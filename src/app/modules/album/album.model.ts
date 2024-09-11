@@ -1,26 +1,52 @@
 import { model, Schema } from "mongoose";
 import { TAlbum } from "./album.interface";
 
-
 // Define the schema
-const albumSchema = new Schema<TAlbum>({
-  albumName: {
-    type: String,
-    required: [true, "album name is required"],
+const albumSchema = new Schema<TAlbum>(
+  {
+    albumName: {
+      type: String,
+      required: [true, "album name is required"],
+    },
+    previouslyReleased: {
+      type: Boolean,
+      default: false,
+    },
+    artistId: {
+      type: Schema.Types.ObjectId,
+      ref: "Artist",
+      required: [true, "artist name is required"],
+    },
+    label: {
+      type: String,
+      required: [true, "Name of the record laebl is required"],
+    },
+    genre: {
+      type: String,
+      required: [true, "genre is required"],
+    },
+    subGenre: {
+      type: String,
+      required: [true, "sub-genre is required"],
+    },
+    releasedDate: {
+      type: Date,
+      default: Date.now(),
+    },
+    isReleased: {
+      type: Boolean,
+      default: false,
+    },
+    songs: {
+      type: Array,
+      ref: "Song",
+      default: [],
+    },
   },
-  albumImage: {
-    type: String,
-    required: [true, "album image is required"],
-  },
-  artistName: {
-    type: String,
-    required: [true, "artist name is required"],
-  },
-  releasedDate: {
-    type: Date,
-    required: [true, "released date is required"],
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 // Create the model
 export const Album = model("Album", albumSchema);

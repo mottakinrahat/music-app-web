@@ -2,7 +2,8 @@ import { z } from "zod";
 
 // user registration schema
 const userValidationSchema = z.object({
-  username: z.string().nonempty({ message: "Username is required" }),
+  firstName: z.string().nonempty({ message: "firstName is required" }),
+  lastName: z.string().nonempty({ message: "lastName is required" }),
   email: z.string().email({ message: "Invalid email format" }),
   password: z
     .string({

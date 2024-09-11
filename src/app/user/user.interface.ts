@@ -4,7 +4,8 @@ import { USER_ROLE } from "./user.constant";
 
 // user interface
 export interface TUser {
-  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   contactNo: string;
@@ -19,6 +20,7 @@ export type TLoginUser = {
 };
 
 export interface UserDocument extends Document, TUser {
+  _id: Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
 }

@@ -3,20 +3,24 @@ import httpStatus from "http-status";
 import jwt from "jsonwebtoken";
 import config from "../../config";
 import { TLoginUser } from "./auth.interface";
-import { UserModel } from "../../user/user.model";
 import AppError from "../../utils/AppError";
+import { UserArtist } from "../user-artist/user-artist.model";
+import { createJSONWebToken } from "../../utils/createToken";
+import { emailWithNodeMail } from "../../utils/email";
+
+interface JwtPayload {
+  email: string;
+  iat?: number;
+  exp?: number;
+}
 
 const loginUser = async (payload: TLoginUser) => {
   const { email, password } = payload;
 
-  const user = await UserModel.findOne({ email });
+  const user = await UserArtist.findOne({ email });
 
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, ` User not found `);
-  }
-  const isDeleted = user?.isDeleted;
-  if (isDeleted) {
-    throw new AppError(httpStatus.FORBIDDEN, "User is deleted");
   }
 
   // Compare the provided password
@@ -27,22 +31,24 @@ const loginUser = async (payload: TLoginUser) => {
   }
 
   const jwtPayload = {
-    _id: user._id,
-    username: user?.username,
+    _id: user.userId,
+    firstName: user?.firstName,
+    lastName: user?.lastName,
     email: user?.email,
     role: user?.role,
   };
 
   const returnUser = {
-    _id: user?._id,
-    username: user?.username,
+    _id: user?.userId,
+    firstName: user?.firstName,
+    lastName: user?.lastName,
     email: user?.email,
     role: user?.role,
   };
 
   // generate access token
   const token = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
-    expiresIn: "30d",
+    expiresIn: config.expires_times,
   });
 
   return {
@@ -155,6 +161,75 @@ const loginUser = async (payload: TLoginUser) => {
 //   };
 // };
 
+const forgetPasswordFromDB = async (email: string) => {
+  const user = await UserArtist.findOne({ email: email });
+  if (!user) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      `user not found with this ${email}`
+    );
+  }
+
+  //send email
+  const token = createJSONWebToken(
+    { email },
+    config.forget_password_key as string,
+    "10m"
+  );
+
+  //prepare email
+  const emailData = {
+    email,
+    subject: "Reset password",
+    html: `
+      <h2>Hello ${user.firstName + "" + user.lastName}</h2>
+      <p>Please click here to link <a href="${
+        config.clientUrl
+      }/reset-password/${token}" target="_blank">reset your password</a></p>
+      `,
+  };
+
+  //send email with nodemailer
+  try {
+    await emailWithNodeMail(emailData);
+    return;
+  } catch (error) {
+    throw new AppError(httpStatus.NOT_FOUND, `mail not send ${error}`);
+  }
+
+  return;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const resetPasswordFromDB = async (payload: any) => {
+  const { token, newPassword } = payload;
+
+  const decoded = jwt.verify(
+    token,
+    config.forget_password_key as string
+  ) as JwtPayload;
+
+  if (!decoded) {
+    throw new AppError(httpStatus.NOT_FOUND, "token is invalid");
+  }
+
+  const findEmail = decoded.email;
+
+  const user = await UserArtist.findOne({ email: findEmail });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "user not found");
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  const updates = { password: hashedPassword, new: true };
+
+  await UserArtist.findByIdAndUpdate(user?._id, updates);
+};
+
 export const AuthServices = {
   loginUser,
+  forgetPasswordFromDB,
+  resetPasswordFromDB,
 };

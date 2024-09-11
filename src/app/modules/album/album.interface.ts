@@ -1,7 +1,14 @@
+import { ObjectId } from "mongoose";
+
 export interface TAlbum {
-    albumName: string;
-    albumImage: string;
-    artistName: string;
-    releasedDate: Date;
-  }
-  
+  albumName: string;
+  previouslyReleased: boolean;
+  label: string;
+  subGenre: string;
+  albumImage: string;
+  artistId: ObjectId;
+  releasedDate: Date;
+  isReleased: boolean;
+  songs: ObjectId;
+  genre: string;
+}

@@ -1,17 +1,7 @@
+import httpStatus from "http-status";
 import catchAsync from "../utils/catchAsync";
 import sendResponse from "../utils/sendResponse";
 import { UserService } from "./user.service";
-
-// register user
-const createUser = catchAsync(async (req, res) => {
-  const result = await UserService.createUserIntoDB(req.body);
-  sendResponse(res, {
-    success: true,
-    statusCode: 201,
-    message: "User created successfully",
-    data: result,
-  });
-});
 
 // login user
 const loginUser = catchAsync(async (req, res) => {
@@ -22,6 +12,16 @@ const loginUser = catchAsync(async (req, res) => {
     statusCode: 201,
     message: "User login successfully",
     data: result,
+  });
+});
+
+const getUsers = catchAsync(async (req, res) => {
+  const users = await UserService.getUsersFromDB();
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "users return successfully",
+    data: users,
   });
 });
 
@@ -52,8 +52,21 @@ const changePassword = catchAsync(async (req, res) => {
   }
 });
 
+const getSingleUser = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+  const user = await UserService.getSingleUserIntoDB(userId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "user return successfully",
+    data: user,
+  });
+});
+
 export const UserControllers = {
-  createUser,
   loginUser,
   changePassword,
+  getSingleUser,
+  getUsers,
 };
