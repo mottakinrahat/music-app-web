@@ -13,7 +13,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://x-mega-pro.vercel.app"],
+    origin: [
+      "http://localhost:3000",
+      "https://x-mega-pro.vercel.app",
+      "https://x-mega-pro-web.vercel.app",
+    ],
     credentials: true,
   })
 );

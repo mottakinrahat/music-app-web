@@ -1,14 +1,11 @@
 import { model, Schema } from "mongoose";
 import { TSong } from "./song.interface";
 
-const nestedSchema = new Schema(
-  {
-    startTime: { type: String, required: true },
-    endTime: { type: String, required: true },
-    line: { type: String, required: true },
-  },
-  { _id: false }
-);
+const nestedSchema = new Schema({
+  startTime: { type: String, required: true },
+  endTime: { type: String, required: true },
+  line: { type: String, required: true },
+});
 
 // Define the schema
 const songSchema = new Schema<TSong>(
