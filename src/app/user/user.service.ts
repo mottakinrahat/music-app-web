@@ -13,13 +13,17 @@ import AppError from "../utils/AppError";
 import config from "../config";
 import { PasswordHistoryModel } from "../modules/passwordHistory/passwordHistory.model";
 import { newPasswordValidationSchema } from "./user.validation";
+import { UserArtist } from "../modules/user-artist/user-artist.model";
 
 // create user /register user
 const createUserIntoDB = async (payload: TUser) => {
-  const isUserExist = await UserModel.findOne({ email: payload?.email });
+  const isUserExist = await UserArtist.findOne({ email: payload.email });
 
   if (isUserExist) {
-    throw new AppError(httpStatus.BAD_REQUEST, "User already exist");
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "this email already registered as a user"
+    );
   }
 
   const result = (await UserModel.create(payload)) as UserDocument;
@@ -40,14 +44,20 @@ const createUserIntoDB = async (payload: TUser) => {
   }
 
   const returnUser = {
-    _id: result?._id,
-    username: result?.username,
+    _id: result._id,
+    firstName: result?.firstName,
+    lastName: result?.lastName,
     email: result?.email,
     role: result?.role,
     createdAt: result?.createdAt,
     updatedAt: result?.updatedAt,
   };
   return returnUser;
+};
+
+const getUsersFromDB = async () => {
+  const users = await UserModel.find().select("-password");
+  return users;
 };
 
 // handle login
@@ -68,13 +78,16 @@ const loginUser = async (payload: TLoginUser) => {
 
   const jwtPayload = {
     _id: user._id,
+    firstName: user?.firstName,
+    lastName: user?.lastName,
     email: user?.email,
     role: user?.role,
   };
 
   const returnUser = {
     _id: user?._id,
-    username: user?.username,
+    firstName: user?.firstName,
+    lastName: user?.lastName,
     email: user?.email,
     role: user?.role,
   };
@@ -167,8 +180,18 @@ const changePasswordIntoDB = async (
   return result;
 };
 
+const getSingleUserIntoDB = async (userId: string) => {
+  const user = await UserArtist.findOne({ userId }).populate({
+    path: "userId",
+    select: "-password",
+  });
+  return user?.userId;
+};
+
 export const UserService = {
   createUserIntoDB,
   loginUser,
   changePasswordIntoDB,
+  getSingleUserIntoDB,
+  getUsersFromDB,
 };
