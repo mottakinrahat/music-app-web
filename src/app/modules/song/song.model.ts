@@ -1,47 +1,10 @@
 import { model, Schema } from "mongoose";
 import { TSong } from "./song.interface";
 
-<<<<<<< HEAD
-// Define the schema
-const songSchema = new Schema<TSong>({
-  songName: {
-    type: String,
-    required: [true, "songName is required"],
-  },
-  songArtist: {
-    type: String,
-    required: [true, "songArtist is required"],
-  },
-  songImage: {
-    type: String,
-  },
-  songAlbum: {
-    type: Schema.Types.ObjectId,
-    ref:"Album",
-    required: [true, "songAlbum is required"],
-  },
-  songDuration: {
-    type: String,
-    required: [true, "songDuration is required"],
-  },
-  releaseYear: {
-    type: Number,
-    required: [true, "releaseYear is required"],
-  },
-  genre: {
-    type: String,
-    required: [true, "genre is required"],
-  },
-  songLink: {
-    type: String,
-    required: [true, "song link is required"],
-  },
-=======
 const nestedSchema = new Schema({
   startTime: { type: String, required: true },
   endTime: { type: String, required: true },
   line: { type: String, required: true },
->>>>>>> c80c9edb5df76016c1060286975619c3dab3ae79
 });
 
 // Define the schema
