@@ -18,7 +18,17 @@ const getPlayListByUserFromDB = async (id: string) => {
   return playListByUser;
 };
 
+const getAllPlayListIntoDB = async () => {
+  const result = await Playlist.find({}).populate("playListSongs");
+  // const allPlayListSongs = result.flatMap((playlist) => playlist.playListSongs);
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "Play list not found");
+  }
+  return result;
+};
+
 export const PlayListServices = {
   createPlayListIntoDB,
   getPlayListByUserFromDB,
+  getAllPlayListIntoDB,
 };

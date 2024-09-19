@@ -17,6 +17,8 @@ app.use(
       "http://localhost:3000",
       "https://x-mega-pro.vercel.app",
       "https://x-mega-pro-web.vercel.app",
+      "https://xmegapro.com",
+      "https://dev.xmegapro.com",
     ],
     credentials: true,
   })
