@@ -8,6 +8,12 @@ const createPlayListIntoDB = async (payload: TPlaylist) => {
   return result;
 };
 
+const getAllPlayListIntoDB = async () => {
+  const result = await Playlist.find({}).populate("playListSongs");
+  const allPlayListSongs = result.flatMap((playlist) => playlist.playListSongs);
+  return allPlayListSongs;
+};
+
 const getPlayListByUserFromDB = async (id: string) => {
   const playListByUser = await Playlist.find({ userId: id }).populate(
     "playListSongs"
@@ -21,4 +27,5 @@ const getPlayListByUserFromDB = async (id: string) => {
 export const PlayListServices = {
   createPlayListIntoDB,
   getPlayListByUserFromDB,
+  getAllPlayListIntoDB,
 };

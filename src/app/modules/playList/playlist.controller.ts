@@ -39,6 +39,16 @@ const getPlayListByUser = catchAsync(async (req, res) => {
   });
 });
 
+const getAllPlayList = catchAsync(async (req, res) => {
+  const playlist = await PlayListServices.getAllPlayListIntoDB();
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "All Play list retrived successfully",
+    data: playlist,
+  });
+});
+
 const playlistHandler = catchAsync(async (req, res) => {
   const { id, userId, playlistid } = req.params;
   const { ObjectId } = mongoose.Types;
@@ -113,4 +123,5 @@ export const playListController = {
   createPlaylist,
   getPlayListByUser,
   playlistHandler,
+  getAllPlayList,
 };
