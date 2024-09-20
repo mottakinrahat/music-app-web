@@ -1,12 +1,13 @@
 import express from "express";
-import validateRequest from "../../middleware/validateRequest";
-import { songValidation } from "./song.validation";
 import { songController } from "./song.controller";
+import ensureDirectoryExists from "../../middleware/insureSongDirectory";
+import { uploadSong } from "../../middleware/uploadSongs";
 const router = express.Router();
 
 router.post(
   "/",
-  validateRequest(songValidation.songValidationSchema),
+  ensureDirectoryExists,
+  uploadSong.single("songLink"),
   songController.createSong
 );
 router.get("/", songController.getAllSong);

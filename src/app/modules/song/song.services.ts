@@ -4,6 +4,8 @@ import { TSong } from "./song.interface";
 import { Song } from "./song.model";
 import { FilterQuery } from "mongoose";
 import { Album } from "../album/album.model";
+import uploadFileAndGetLink from "../../middleware/fileUpload";
+import config from "../../config";
 
 export interface ISong extends Document {
   songName: string;
@@ -11,16 +13,23 @@ export interface ISong extends Document {
 }
 
 const createSongIntoDB = async (payload: TSong) => {
+  const fileName = `${payload.songName}.mp3`;
+  const songLink = await uploadFileAndGetLink(config.uploadSongDir, fileName);
+
+  // Add the songLink to the payload
+  payload.songLink = songLink;
   const { songAlbum } = payload;
+
+  // Create the song in the database
   const result = await Song.create(payload);
 
+  // Add the song to the album
   const songId = result._id;
   await Album.findByIdAndUpdate(
     songAlbum,
     { $push: { songs: songId } },
     { new: true }
   );
-
   return result;
 };
 
