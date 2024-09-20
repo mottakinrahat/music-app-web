@@ -1,8 +1,15 @@
 import express from "express";
 import { songController } from "./song.controller";
+import ensureDirectoryExists from "../../middleware/insureSongDirectory";
+import { uploadSong } from "../../middleware/uploadSongs";
 const router = express.Router();
 
-router.post("/", songController.createSong);
+router.post(
+  "/",
+  ensureDirectoryExists,
+  uploadSong.single("songLink"),
+  songController.createSong
+);
 router.get("/", songController.getAllSong);
 router.get("/:id", songController.getSingleSong);
 router.get("/category/:id", songController.getSongsByCategory);
