@@ -8,7 +8,30 @@ import mongoose from "mongoose";
 import { Favourite } from "../favList/favourite.model";
 
 const createSong = catchAsync(async (req, res) => {
-  const result = await songServices.createSongIntoDB(req.body);
+  const {
+    songName,
+    songArtist,
+    songAlbum,
+    songDuration,
+    releaseYear,
+    bpm,
+    genre,
+    category,
+    lyrics,
+  } = req.body;
+  const songData = {
+    songName,
+    songArtist,
+    songAlbum,
+    songDuration,
+    releaseYear,
+    bpm,
+    genre,
+    category,
+    lyrics,
+    songLink: req.file, // Add the song link here
+  };
+  const result = await songServices.createSongIntoDB(songData);
 
   sendResponse(res, {
     success: true,
