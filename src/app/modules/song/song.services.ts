@@ -15,7 +15,7 @@ export interface ISong extends Document {
 const createSongIntoDB = async (payload: TSong) => {
   const fileName = `${payload.songName}.mp3`;
   const songLink = await uploadToSpaces(config.uploadSongDir, fileName);
-  payload.songLink = songLink as string;
+  payload.songLink = songLink;
   const { songAlbum } = payload;
   const result = await Song.create(payload);
 
