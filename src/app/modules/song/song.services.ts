@@ -15,14 +15,14 @@ export interface ISong extends Document {
 }
 
 const createSongIntoDB = async (payload: TSong) => {
-  const fileBuffer = payload.songLink as unknown as Buffer; // Assuming payload.songLink is the file Buffer
+  // const fileBuffer = payload.songLink as unknown as Buffer; // Assuming payload.songLink is the file Buffer
   const fileName = `${payload.songName}.mp3`;
 
   // Upload the buffer to DigitalOcean Spaces and get the CDN link
-  const cdnLink = await uploadToSpaces(fileBuffer, fileName);
+  const cdnLink = await uploadToSpaces(payload.songLink.buffer, fileName);
 
   // Set the CDN link (which is a string) to songLink in the payload
-  payload.songLink = cdnLink.toString();
+  payload.songLink = cdnLink;
 
   const { songAlbum } = payload;
 

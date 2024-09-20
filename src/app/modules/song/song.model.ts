@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { TSong } from "./song.interface";
+import { Buffer } from 'buffer';
 
 // const nestedSchema = new Schema({
 //   startTime: { type: String, required: true },
@@ -44,7 +45,7 @@ const songSchema = new Schema<TSong>(
       required: [true, "genre is required"],
     },
     songLink: {
-      type: String,
+      type: Buffer,
       required: [true, "song link is required"],
     },
     category: {
