@@ -1,15 +1,15 @@
+import fs from "fs";
 import {
-  S3Client,
   PutObjectCommand,
+  S3Client,
   PutObjectCommandInput,
 } from "@aws-sdk/client-s3";
 import config from "../config";
-import fs from "fs";
 
-// Configure AWS SDK for DigitalOcean Spaces
-const s3 = new S3Client({
+const s3Client = new S3Client({
   endpoint: config.doSpacesEndPoint as string,
-  region: "us-east-1", // Set a region, DigitalOcean Spaces requires it
+  forcePathStyle: false,
+  region: "us-east-1",
   credentials: {
     accessKeyId: config.doAccessKey as string,
     secretAccessKey: config.doSecretKey as string,
@@ -19,35 +19,32 @@ const s3 = new S3Client({
 const uploadFileAndGetLink = async (
   fileDir: string,
   fileName: string
-): Promise<string> => {
+): Promise<string | null> => {
   const filePath = `${fileDir}/${fileName}`;
-
-  // Read the file content asynchronously
-  const fileContent = await fs.promises.readFile(filePath);
+  const fileStream = fs.createReadStream(filePath);
 
   const params: PutObjectCommandInput = {
     Bucket: config.doBucketName as string,
-    Key: `songs/${fileName}`, // No leading slash
-    Body: fileContent,
-    ACL: "public-read", // Make it publicly accessible
+    Key: `songs/${fileName}`,
+    Body: fileStream,
+    ACL: "public-read",
+    Metadata: {
+      "x-amz-meta-my-key": "your-value",
+    },
   };
 
-  // Uploading file to DigitalOcean Space (S3-compatible)
-  const command = new PutObjectCommand(params);
-  await s3.send(command);
+  try {
+    await s3Client.send(new PutObjectCommand(params));
 
-  // Ensure the CDN endpoint ends with a slash
-  if (!config.doCdnEndPoint) {
-    throw new Error("CDN endpoint is not defined in the configuration.");
+    // Return the public URL
+    const publicUrl: string = `${config.doCdnEndPoint}/songs/${fileName}`;
+    return publicUrl; // Return the URL as a string
+  } catch (err) {
+    console.error("Error uploading file:", err);
+    return null; // Return null if there's an error
+  } finally {
+    fs.unlinkSync(filePath); // Clean up local file
   }
-
-  const cdnEndpoint = config.doCdnEndPoint.endsWith("/")
-    ? config.doCdnEndPoint
-    : `${config.doCdnEndPoint}/`;
-
-  const url = new URL(`songs/${fileName}`, cdnEndpoint);
-
-  return url.href; // Return the public CDN URL of the file
 };
 
 export default uploadFileAndGetLink;
