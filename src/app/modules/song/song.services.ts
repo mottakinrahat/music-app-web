@@ -1,3 +1,4 @@
+import fs from 'fs';
 import httpStatus from "http-status";
 import AppError from "../../utils/AppError";
 import { TSong } from "./song.interface";
@@ -13,24 +14,48 @@ export interface ISong extends Document {
 }
 
 const createSongIntoDB = async (payload: TSong) => {
-  const fileName = `${payload.songName}.mp3`;
-  const songLink = await uploadFileAndGetLink(config.uploadSongDir, fileName);
+  try {
+    const fileName = `${payload.songName}.mp3`;
+    const filePath = `${config.uploadSongDir}/${fileName}`;
 
-  // Add the songLink to the payload
-  payload.songLink = songLink;
-  const { songAlbum } = payload;
+    // Check if the file exists before trying to upload
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`File not found: ${filePath}`);
+    }
 
-  // Create the song in the database
-  const result = await Song.create(payload);
+    // Read file content
+    const fileContent = fs.readFileSync(filePath);
 
-  // Add the song to the album
-  const songId = result._id;
-  await Album.findByIdAndUpdate(
-    songAlbum,
-    { $push: { songs: songId } },
-    { new: true }
-  );
-  return result;
+    // Upload the song to DigitalOcean and get the link
+    const songLink = await uploadFileAndGetLink(fileName, fileContent);
+
+    // Check if upload was successful
+    if (!songLink) {
+      throw new Error("File upload failed.");
+    }
+
+    // Add the songLink to the payload
+    payload.songLink = songLink;
+
+    // Destructure songAlbum from payload
+    const { songAlbum } = payload;
+
+    // Create the song in the database
+    const result = await Song.create(payload);
+
+    // Add the song ID to the album's songs array
+    const songId = result._id;
+    await Album.findByIdAndUpdate(
+      songAlbum,
+      { $push: { songs: songId } },
+      { new: true }
+    );
+
+    return result;
+  } catch (error) {
+    console.error("Error creating song in database:", error);
+    throw new Error("Error creating song. Please try again.");
+  }
 };
 
 const getSongFromDB = async (
