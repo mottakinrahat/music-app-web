@@ -18,14 +18,13 @@ const uploadToSpaces = async (
     });
 
     interface Iparams {
-      Bucket: string | undefined;
       Key: string;
       Body: fs.ReadStream;
       ACL: string;
     }
 
     const params: Iparams = {
-      Bucket: config.doBucketName,
+      // Bucket: config.doBucketName,
       Key: fileName,
       Body: fs.createReadStream(filePath),
       ACL: "public-read",
