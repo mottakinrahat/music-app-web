@@ -7,6 +7,8 @@ const uploadToSpaces = async (
   fileName: string
 ): Promise<string> => {
   try {
+
+    console.log("File path", filePath)
     // Check if the filePath is a valid file
     const stat = fs.statSync(filePath);
     if (!stat.isFile()) {
