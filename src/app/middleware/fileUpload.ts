@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import fs from "fs";
 import { S3 } from "@aws-sdk/client-s3";
 import config from "../config";
@@ -7,14 +8,6 @@ const uploadToSpaces = async (
   fileName: string
 ): Promise<string> => {
   try {
-
-    console.log("File path", filePath)
-    // Check if the filePath is a valid file
-    const stat = fs.statSync(filePath);
-    if (!stat.isFile()) {
-      throw new Error("Provided path is not a file.");
-    }
-
     const s3 = new S3({
       endpoint: config.doSpacesEndPoint,
       credentials: {
@@ -38,17 +31,31 @@ const uploadToSpaces = async (
       ACL: "public-read",
     };
 
-    await s3.putObject(params);
+    s3.putObject(params);
 
     // Construct CDN link using the DigitalOcean Spaces bucket URL and file name
-    const cdnLink = `${config.doCdnEndPoint}/${fileName}`;
-    console.log(cdnLink);
+    const cdnLink = `${config.doCdnEndPoint}/cdn.digitaloceanspaces.com/${fileName}`;
+    console.log(cdnLink)
 
     return cdnLink; // Return the CDN link
   } catch (error) {
-    console.error("Upload error:", error);
     throw error;
   }
 };
 
 export default uploadToSpaces;
+
+// const testUpload = async () => {
+//   const filePath = config.uploadSongDir; // Change to a valid file path
+//   const fileName = "testfile.txt"; // Change to a desired file name
+
+//   try {
+//     const cdnLink = await uploadToSpaces(filePath, fileName);
+//     console.log("File uploaded successfully. CDN Link:", cdnLink);
+//   } catch (error) {
+//     console.error("Upload failed:", error);
+//   }
+// };
+
+// testUpload();
+
