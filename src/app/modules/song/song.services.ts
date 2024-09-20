@@ -1,4 +1,3 @@
-import fs from 'fs';
 import httpStatus from "http-status";
 import AppError from "../../utils/AppError";
 import { TSong } from "./song.interface";
@@ -16,34 +15,16 @@ export interface ISong extends Document {
 const createSongIntoDB = async (payload: TSong) => {
   try {
     const fileName = `${payload.songName}.mp3`;
-    const filePath = `${config.uploadSongDir}/${fileName}`;
-
-    // Check if the file exists before trying to upload
-    if (!fs.existsSync(filePath)) {
-      throw new Error(`File not found: ${filePath}`);
-    }
-
-    // Read file content
-    const fileContent = fs.readFileSync(filePath);
-
-    // Upload the song to DigitalOcean and get the link
-    const songLink = await uploadFileAndGetLink(fileName, fileContent);
-
-    // Check if upload was successful
-    if (!songLink) {
-      throw new Error("File upload failed.");
-    }
+    const songLink = await uploadFileAndGetLink(config.uploadSongDir, fileName);
 
     // Add the songLink to the payload
     payload.songLink = songLink;
-
-    // Destructure songAlbum from payload
     const { songAlbum } = payload;
 
     // Create the song in the database
     const result = await Song.create(payload);
 
-    // Add the song ID to the album's songs array
+    // Add the song to the album
     const songId = result._id;
     await Album.findByIdAndUpdate(
       songAlbum,
@@ -53,8 +34,8 @@ const createSongIntoDB = async (payload: TSong) => {
 
     return result;
   } catch (error) {
-    console.error("Error creating song in database:", error);
-    throw new Error("Error creating song. Please try again.");
+    console.error("Error creating song:", error);
+    throw error;
   }
 };
 
