@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-useless-catch */
 import {
   S3Client,
   PutObjectCommand,
   PutObjectCommandInput,
 } from "@aws-sdk/client-s3";
 import config from "../config";
+import { Buffer } from "buffer";
 
 // Configure AWS SDK for DigitalOcean Spaces
 const s3 = new S3Client({
@@ -17,7 +17,10 @@ const s3 = new S3Client({
   },
 });
 
-const uploadFileAndGetLink = async (fileName: any, fileContent: any) => {
+const uploadFileAndGetLink = async (
+  fileName: string,
+  fileContent: Buffer
+): Promise<string | undefined> => {
   try {
     const params: PutObjectCommandInput = {
       Bucket: config.doBucketName, // Bucket from .env
@@ -26,12 +29,16 @@ const uploadFileAndGetLink = async (fileName: any, fileContent: any) => {
       ACL: "public-read", // Specify the correct ACL type
     };
 
-    const result = await s3.send(new PutObjectCommand(params));
-    console.log("File uploaded successfully:", result);
-    return result;
+    // Upload the file
+    await s3.send(new PutObjectCommand(params));
+
+    // Construct the public URL manually
+    const publicUrl = `https://${config.doBucketName}.${config.doSpacesEndPoint}/songs/${fileName}`;
+
+    return publicUrl; // Return the URL as a string
   } catch (err) {
     console.error("Error uploading file:", err);
-    throw err; // Re-throw error for handling in the calling code
+    return undefined; // Ensure we return undefined on error
   }
 };
 
