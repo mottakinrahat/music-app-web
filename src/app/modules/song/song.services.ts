@@ -18,7 +18,7 @@ const createSongIntoDB = async (payload: TSong) => {
     const songLink = await uploadFileAndGetLink(config.uploadSongDir, fileName);
 
     // Add the songLink to the payload
-    payload.songLink = songLink;
+    payload.songLink = songLink as string;
     const { songAlbum } = payload;
 
     // Create the song in the database
