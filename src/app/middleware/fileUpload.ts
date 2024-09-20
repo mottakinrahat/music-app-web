@@ -1,50 +1,45 @@
+/* eslint-disable no-useless-catch */
 import fs from "fs";
-import {
-  PutObjectCommand,
-  S3Client,
-  PutObjectCommandInput,
-} from "@aws-sdk/client-s3";
+import { S3 } from "@aws-sdk/client-s3";
 import config from "../config";
 
-const s3Client = new S3Client({
-  endpoint: config.doSpacesEndPoint as string,
-  forcePathStyle: false,
-  region: "us-east-1",
-  credentials: {
-    accessKeyId: config.doAccessKey as string,
-    secretAccessKey: config.doSecretKey as string,
-  },
-});
-
-const uploadFileAndGetLink = async (
-  fileDir: string,
+const uploadToSpaces = async (
+  filePath: string,
   fileName: string
-): Promise<string | null> => {
-  const filePath = `${fileDir}/${fileName}`;
-  const fileStream = fs.createReadStream(filePath);
-
-  const params: PutObjectCommandInput = {
-    Bucket: config.doBucketName as string,
-    Key: `songs/${fileName}`,
-    Body: fileStream,
-    ACL: "public-read",
-    Metadata: {
-      "x-amz-meta-my-key": "your-value",
-    },
-  };
-
+): Promise<string> => {
   try {
-    await s3Client.send(new PutObjectCommand(params));
+    const s3 = new S3({
+      endpoint: config.doSpacesEndPoint,
+      credentials: {
+        accessKeyId: config.doAccessKey || "",
+        secretAccessKey: config.doSecretKey || "",
+      },
+      region: "us-east-1", // Default region, you can change this if necessary
+    });
 
-    // Return the public URL
-    const publicUrl: string = `${config.doCdnEndPoint}/songs/${fileName}`;
-    return publicUrl; // Return the URL as a string
-  } catch (err) {
-    console.error("Error uploading file:", err);
-    return null; // Return null if there's an error
-  } finally {
-    fs.unlinkSync(filePath); // Clean up local file
+    interface Iparams {
+      Bucket: string | undefined;
+      Key: string;
+      Body: fs.ReadStream;
+      ACL: string;
+    }
+
+    const params: Iparams = {
+      Bucket: config.doBucketName,
+      Key: fileName,
+      Body: fs.createReadStream(filePath),
+      ACL: "public-read",
+    };
+
+    await s3.putObject(params);
+
+    // Construct CDN link using the DigitalOcean Spaces bucket URL and file name
+    const cdnLink = `https://${config.doBucketName}.${config.doCdnEndPoint}/cdn.digitaloceanspaces.com/${fileName}`;
+
+    return cdnLink; // Return the CDN link
+  } catch (error) {
+    throw error;
   }
 };
 
-export default uploadFileAndGetLink;
+export default uploadToSpaces;
