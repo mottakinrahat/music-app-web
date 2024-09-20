@@ -31,10 +31,11 @@ const uploadToSpaces = async (
       ACL: "public-read",
     };
 
-    await s3.putObject(params);
+    s3.putObject(params);
 
     // Construct CDN link using the DigitalOcean Spaces bucket URL and file name
-    const cdnLink = `https://${config.doBucketName}.${config.doCdnEndPoint}/cdn.digitaloceanspaces.com/${fileName}`;
+    const cdnLink = `${config.doCdnEndPoint}/cdn.digitaloceanspaces.com/${fileName}`;
+    console.log(cdnLink)
 
     return cdnLink; // Return the CDN link
   } catch (error) {
@@ -43,3 +44,18 @@ const uploadToSpaces = async (
 };
 
 export default uploadToSpaces;
+
+// const testUpload = async () => {
+//   const filePath = config.uploadSongDir; // Change to a valid file path
+//   const fileName = "testfile.txt"; // Change to a desired file name
+
+//   try {
+//     const cdnLink = await uploadToSpaces(filePath, fileName);
+//     console.log("File uploaded successfully. CDN Link:", cdnLink);
+//   } catch (error) {
+//     console.error("Upload failed:", error);
+//   }
+// };
+
+// testUpload();
+
