@@ -1,13 +1,17 @@
-/* eslint-disable no-useless-catch */
 import fs from "fs";
 import { S3 } from "@aws-sdk/client-s3";
 import config from "../config";
 
-const uploadToSpaces = async (
-  filePath: string,
-  fileName: string
-): Promise<string> => {
+const uploadToSpaces = async (filePath: string, fileName: string): Promise<string> => {
   try {
+    console.log("File path received:", filePath); // Log the file path
+    console.log("Bucket:", config.doBucketName);  // Log the bucket name
+
+    // Check if the file exists before proceeding
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`File at path ${filePath} does not exist.`);
+    }
+
     const s3 = new S3({
       endpoint: config.doSpacesEndPoint,
       credentials: {
@@ -17,44 +21,23 @@ const uploadToSpaces = async (
       region: "us-east-1", // Default region, you can change this if necessary
     });
 
-    interface Iparams {
-      Key: string;
-      Body: fs.ReadStream;
-      ACL: string;
-    }
-
-    const params: Iparams = {
-      // Bucket: config.doBucketName,
+    const params = {
+      Bucket: config.doBucketName, // Ensure the bucket name is defined here
       Key: fileName,
-      Body: fs.createReadStream(filePath),
+      Body: fs.createReadStream(filePath), // This expects a file stream
       ACL: "public-read",
     };
 
-    s3.putObject(params);
+    await s3.putObject(params);
 
-    // Construct CDN link using the DigitalOcean Spaces bucket URL and file name
-    const cdnLink = `${config.doCdnEndPoint}/cdn.digitaloceanspaces.com/${fileName}`;
-    console.log(cdnLink)
+    const cdnLink = `${config.doCdnEndPoint}/${fileName}`;
+    console.log("CDN Link:", cdnLink);
 
-    return cdnLink; // Return the CDN link
+    return cdnLink;
   } catch (error) {
+    console.error("Upload error:", error);
     throw error;
   }
 };
 
 export default uploadToSpaces;
-
-// const testUpload = async () => {
-//   const filePath = config.uploadSongDir; // Change to a valid file path
-//   const fileName = "testfile.txt"; // Change to a desired file name
-
-//   try {
-//     const cdnLink = await uploadToSpaces(filePath, fileName);
-//     console.log("File uploaded successfully. CDN Link:", cdnLink);
-//   } catch (error) {
-//     console.error("Upload failed:", error);
-//   }
-// };
-
-// testUpload();
-
