@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-useless-catch */
 import {
   S3Client,
   PutObjectCommand,
@@ -27,11 +26,9 @@ const uploadFileAndGetLink = async (fileName: any, fileContent: any) => {
     };
 
     const result = await s3.send(new PutObjectCommand(params));
-    console.log("File uploaded successfully:", result);
     return result;
   } catch (err) {
     console.error("Error uploading file:", err);
-    throw err; // Re-throw error for handling in the calling code
   }
 };
 
