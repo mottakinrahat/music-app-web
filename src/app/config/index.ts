@@ -24,4 +24,5 @@ export default {
   doBucketName: process.env.DO_BUCKET_NAME,
   doAccessKey: process.env.DO_ACCESS_KEY,
   doSecretKey: process.env.DO_SECRET_KEY,
+  doCdnEndPoint: process.env.DO_CDN_ENDPOINT,
 };
