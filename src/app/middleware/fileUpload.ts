@@ -21,12 +21,12 @@ const uploadFileAndGetLink = async (
   fileName: string
 ): Promise<string | null> => {
   const filePath = `${fileDir}/${fileName}`;
-  const fileStream = fs.createReadStream(filePath);
+  const fileContent = fs.readFileSync(filePath);
 
   const params: PutObjectCommandInput = {
     Bucket: config.doBucketName as string,
     Key: `songs/${fileName}`,
-    Body: fileStream,
+    Body: fileContent,
     ACL: "public-read",
     Metadata: {
       "x-amz-meta-my-key": "your-value",
