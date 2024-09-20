@@ -18,7 +18,7 @@ export default {
   encryption_key: process.env.ENCRYPTION_KEY,
   encryption_iv: process.env.ENCRYPTION_IV,
   importSongsDir: `${currentPath}/public/importSongs`,
-  uploadSongDir: `/var/www/music-app-web/songs`,
+  uploadSongDir: `https://x-mega-pro.nyc3.digitaloceanspaces.com/songs`,
   apiLink: process.env.API_LINK,
   doSpacesEndPoint: process.env.DO_SPACES_ENDPOINT,
   doBucketName: process.env.DO_BUCKET_NAME,
