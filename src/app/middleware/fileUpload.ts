@@ -23,12 +23,12 @@ const uploadFileAndGetLink = async (
   const filePath = `${fileDir}/${fileName}`;
 
   // Read the file content asynchronously
-  const fileContent = await fs.promises.readFile(filePath);
+  const fileStream = fs.createReadStream(filePath);
 
   const params: PutObjectCommandInput = {
     Bucket: config.doBucketName as string,
     Key: `songs/${fileName}`, // No leading slash
-    Body: fileContent,
+    Body: fileStream,
     ACL: "public-read", // Make it publicly accessible
   };
 
