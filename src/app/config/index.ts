@@ -18,5 +18,10 @@ export default {
   encryption_key: process.env.ENCRYPTION_KEY,
   encryption_iv: process.env.ENCRYPTION_IV,
   importSongsDir: `${currentPath}/public/importSongs`,
+  uploadSongDir: `${currentPath}/songs`,
   apiLink: process.env.API_LINK,
+  doSpacesEndPoint: process.env.DO_SPACES_ENDPOINT,
+  doBucketName: process.env.DO_BUCKET_NAME,
+  doAccessKey: process.env.DO_ACCESS_KEY,
+  doSecretKey: process.env.DO_SECRET_KEY,
 };
