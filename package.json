@@ -1,5 +1,5 @@
 {
-  "name": "assignment_2_mongoose_express",
+  "name": "xmegaproapp",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.654.0",
     "@types/nodemailer": "^6.4.15",
     "audio-metadata": "^0.3.0",
     "aws-sdk": "^2.1691.0",
