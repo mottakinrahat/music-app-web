@@ -1,11 +1,11 @@
 import { model, Schema } from "mongoose";
 import { TSong } from "./song.interface";
 
-const nestedSchema = new Schema({
-  startTime: { type: String, required: true },
-  endTime: { type: String, required: true },
-  line: { type: String, required: true },
-});
+// const nestedSchema = new Schema({
+//   startTime: { type: String, required: true },
+//   endTime: { type: String, required: true },
+//   line: { type: String, required: true },
+// });
 
 // Define the schema
 const songSchema = new Schema<TSong>(
@@ -52,7 +52,10 @@ const songSchema = new Schema<TSong>(
       ref: "Category",
       required: [true, "Please select category"],
     },
-    lyrics: [nestedSchema],
+    lyrics: {
+      type: String,
+      default: "test",
+    },
     favUsers: [{ type: Schema.Types.ObjectId, ref: "User", default: [] }],
     playListUsers: [{ type: Schema.Types.ObjectId, ref: "User", default: [] }],
   },
