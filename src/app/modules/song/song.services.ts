@@ -13,30 +13,21 @@ export interface ISong extends Document {
 }
 
 const createSongIntoDB = async (payload: TSong) => {
-  try {
-    const fileName = `${payload.songName}.mp3`;
-    const songLink = await uploadFileAndGetLink(config.uploadSongDir, fileName);
+  
+  const fileName = `${payload.songName}.mp3`;
+  const songLink = await uploadFileAndGetLink(config.uploadSongDir, fileName);
+  payload.songLink = songLink;
+  const { songAlbum } = payload;
+  const result = await Song.create(payload);
 
-    // Add the songLink to the payload
-    payload.songLink = songLink as string;
-    const { songAlbum } = payload;
+  const songId = result._id;
+  await Album.findByIdAndUpdate(
+    songAlbum,
+    { $push: { songs: songId } },
+    { new: true }
+  );
 
-    // Create the song in the database
-    const result = await Song.create(payload);
-
-    // Add the song to the album
-    const songId = result._id;
-    await Album.findByIdAndUpdate(
-      songAlbum,
-      { $push: { songs: songId } },
-      { new: true }
-    );
-
-    return result;
-  } catch (error) {
-    console.error("Error creating song:", error);
-    throw error;
-  }
+  return result;
 };
 
 const getSongFromDB = async (
