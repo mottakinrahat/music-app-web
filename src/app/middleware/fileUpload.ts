@@ -7,6 +7,7 @@ export const uploadToSpaces = async (
   file: Buffer,
   fileName: string
 ): Promise<string> => {
+  const uploadFileName = `${fileName}.mp3`
   try {
     const s3 = new S3({
       endpoint: config.doSpacesEndPoint,
@@ -19,7 +20,7 @@ export const uploadToSpaces = async (
 
     const params = {
       Bucket: config.doBucketName, // Your DigitalOcean Space name
-      Key: fileName, // File name (e.g., myfile.mp3)
+      Key: uploadFileName, // File name (e.g., myfile.mp3)
       Body: file, // File buffer from multer
       ACL: "public-read" as ObjectCannedACL, // Correctly type the ACL
       ContentType: "audio/mpeg", // Adjust based on the audio file type (you can dynamically infer from file.mimetype)
@@ -29,7 +30,7 @@ export const uploadToSpaces = async (
     await s3.putObject(params);
 
     // Construct CDN link using the DigitalOcean Spaces bucket URL and file name
-    const cdnLink = `${config.doCdnEndPoint}/${fileName}`;
+    const cdnLink = `${config.doCdnEndPoint}/${uploadFileName}`;
     return cdnLink; // Return the CDN link
   } catch (error) {
     console.error("Error uploading to DigitalOcean Spaces:", error);
