@@ -10,18 +10,24 @@ const app: Application = express();
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://x-mega-pro.vercel.app",
-      "https://x-mega-pro-web.vercel.app",
-      "https://xmegapro.com",
-      "https://dev.xmegapro.com",
-    ],
-    credentials: true,
-  })
-);
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://x-mega-pro.vercel.app",
+  "https://x-mega-pro-web.vercel.app",
+  "https://xmegapro.com",
+  "https://dev.xmegapro.com",
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,  // Allow credentials like cookies or HTTP auth
+}));
 
 app.use("/api/v1", router);
 
