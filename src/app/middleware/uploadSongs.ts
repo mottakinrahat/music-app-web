@@ -1,5 +1,4 @@
 import multer from "multer";
-import { S3 } from "@aws-sdk/client-s3";
 import config from "../config";
 
 // Ensure that the uploadSongDir is defined and valid (if needed)

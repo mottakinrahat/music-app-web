@@ -1,5 +1,4 @@
 import { ObjectId } from "mongoose";
-import { Buffer } from "buffer";
 
 // interface Lyric {
 //   startTime: string;
@@ -11,7 +10,7 @@ export interface TSong {
   songName: string;
   artwork: string;
   songArtist: string;
-  songLink: Buffer;
+  songLink: string;
   songAlbum: ObjectId;
   songDuration: string;
   releaseYear: number;
