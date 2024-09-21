@@ -4,10 +4,6 @@ import { TSong } from "./song.interface";
 import { Song } from "./song.model";
 import { FilterQuery } from "mongoose";
 import { Album } from "../album/album.model";
-import { uploadToSpaces } from "../../middleware/fileUpload";
-// import config from "../../config";
-// import uploadToSpaces from "../../middleware/fileUpload";
-import { Buffer } from "buffer";
 
 export interface ISong extends Document {
   songName: string;
@@ -15,18 +11,7 @@ export interface ISong extends Document {
 }
 
 const createSongIntoDB = async (payload: TSong) => {
-  // const fileBuffer = payload.songLink as unknown as Buffer; // Assuming payload.songLink is the file Buffer
-  const fileName = `${payload.songName}.mp3`;
-
-  // Upload the buffer to DigitalOcean Spaces and get the CDN link
-  const cdnLink = await uploadToSpaces(payload.songLink.buffer, fileName);
-
-  // Set the CDN link (which is a string) to songLink in the payload
-  payload.songLink = cdnLink;
-
   const { songAlbum } = payload;
-
-  // Save the song to the database
   const result = await Song.create(payload);
 
   const songId = result._id;

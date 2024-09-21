@@ -6,6 +6,8 @@ import { songServices } from "./song.services";
 import { Song } from "./song.model";
 import mongoose from "mongoose";
 import { Favourite } from "../favList/favourite.model";
+import { uploadToSpaces } from "../../middleware/fileUpload";
+import AppError from "../../utils/AppError";
 
 const createSong = catchAsync(async (req, res) => {
   const {
@@ -19,6 +21,13 @@ const createSong = catchAsync(async (req, res) => {
     category,
     lyrics,
   } = req.body;
+
+  if (!req.file) {
+    throw new AppError(httpStatus.NOT_FOUND, "file not found!");
+  }
+
+  const songLink = await uploadToSpaces(req.file.buffer, req.file?.filename);
+
   const songData = {
     songName,
     songArtist,
@@ -29,7 +38,7 @@ const createSong = catchAsync(async (req, res) => {
     genre,
     category,
     lyrics,
-    songLink: req.file, // Add the song link here
+    songLink,
   };
   const result = await songServices.createSongIntoDB(songData);
 
