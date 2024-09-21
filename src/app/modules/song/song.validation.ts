@@ -11,6 +11,7 @@ export const songValidationSchema = z.object({
   songName: z.string().nonempty({ message: "songName is required" }),
   songArtist: z.string().nonempty({ message: "songArtist is required" }),
   songAlbum: z.string().nonempty({ message: "songAlbum is required" }),
+  songImage: z.string().optional(),
   songDuration: z.string().nonempty({ message: "songDuration is required" }),
   bpm: z
     .number()

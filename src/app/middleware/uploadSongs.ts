@@ -1,22 +1,14 @@
 import multer from "multer";
-import path from "path";
+import { S3 } from "@aws-sdk/client-s3";
 import config from "../config";
 
-// Ensure that the importSongsDir is defined and valid
-if (!config.uploadSongDir) {
-  throw new Error("Import songs directory is not configured.");
+// Ensure that the uploadSongDir is defined and valid (if needed)
+if (!config.doBucketName || !config.doSpacesEndPoint) {
+  throw new Error("DigitalOcean Spaces configuration is not properly set.");
 }
 
-// Multer storage configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.resolve(config.uploadSongDir)); // Ensure it's an absolute path
-  },
-  filename: function (req, file, cb) {
-    const sanitizedFilename = path.basename(file.originalname); // Ensure it's safe to use
-    cb(null, `${sanitizedFilename}`);
-  },
-});
+// Configure multer to use memory storage
+const storage = multer.memoryStorage();
 
 // Multer upload configuration with file filter for validation
 export const uploadSong = multer({
@@ -29,5 +21,5 @@ export const uploadSong = multer({
       cb(new Error("Invalid file type. Only audio files are allowed."));
     }
   },
-  limits: { fileSize: 64 * 1024 * 1024 }, // 20 MB file size limit
+  limits: { fileSize: 64 * 1024 * 1024 }, // 64 MB file size limit
 });
