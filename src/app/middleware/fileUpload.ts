@@ -2,10 +2,13 @@
 import fs from "fs";
 import { S3 } from "@aws-sdk/client-s3";
 import config from "../config";
-import { Buffer } from 'buffer';
+import { Buffer } from "buffer";
 
 // Function to upload file buffer to DigitalOcean Spaces
-export const uploadToSpaces = async (fileBuffer: Buffer, fileName: string): Promise<string> => {
+export const uploadToSpaces = async (
+  fileBuffer: Buffer,
+  fileName: string
+): Promise<string> => {
   try {
     const s3 = new S3({
       endpoint: config.doSpacesEndPoint,
@@ -35,5 +38,3 @@ export const uploadToSpaces = async (fileBuffer: Buffer, fileName: string): Prom
     throw error;
   }
 };
-
-
