@@ -25,7 +25,7 @@ const createSong = catchAsync(async (req, res) => {
     throw new AppError(httpStatus.NOT_FOUND, "file not found!");
   }
 
-  const songLink = await uploadToSpaces(req.file.buffer, req.file?.filename);
+  const songLink = await uploadToSpaces(req.file.buffer, songName);
 
   const songData = {
     songName,
