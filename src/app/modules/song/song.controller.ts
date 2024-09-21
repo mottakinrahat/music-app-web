@@ -19,7 +19,6 @@ const createSong = catchAsync(async (req, res) => {
     bpm,
     genre,
     category,
-    lyrics,
   } = req.body;
 
   if (!req.file) {
@@ -37,7 +36,6 @@ const createSong = catchAsync(async (req, res) => {
     bpm,
     genre,
     category,
-    lyrics,
     songLink,
   };
   const result = await songServices.createSongIntoDB(songData);
