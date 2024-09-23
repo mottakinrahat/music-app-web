@@ -25,7 +25,14 @@ const createSong = catchAsync(async (req, res) => {
     throw new AppError(httpStatus.NOT_FOUND, "file not found!");
   }
 
-  const songLink = await uploadToSpaces(req.file.buffer, songName);
+  const slugify = (songName: string): string => {
+    return songName
+      .toLowerCase() // Convert to lowercase
+      .replace(/ /g, "-") // Replace spaces with hyphens
+      .replace(/[^\w-]+/g, ""); // Remove any non-alphanumeric characters except hyphens
+  };
+
+  const songLink = await uploadToSpaces(req.file.buffer, slugify(songName));
 
   const songData = {
     songName,
