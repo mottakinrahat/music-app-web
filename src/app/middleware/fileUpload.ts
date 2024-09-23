@@ -1,13 +1,18 @@
 import { S3, ObjectCannedACL } from "@aws-sdk/client-s3";
 import config from "../config";
 import { Buffer } from "buffer";
+import path from "path"; // To handle file extensions
 
 // Function to upload file buffer to DigitalOcean Spaces
 export const uploadToSpaces = async (
   file: Buffer,
-  fileName: string
+  fileName: string,
+  originalName: string // Accept original file name to extract the extension
 ): Promise<string> => {
-  const uploadFileName = `${fileName}.mp3`
+  // Extract the file extension from the original name
+  const fileExtension = path.extname(originalName);
+  const uploadFileName = `${fileName}${fileExtension}`; // Use the extracted extension
+
   try {
     const s3 = new S3({
       endpoint: config.doSpacesEndPoint,
