@@ -395,7 +395,18 @@ const updateSong = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     statusCode: 200,
-    message: "songUpdate successfully",
+    message: "song Update successfully",
+    data: "",
+  });
+});
+
+const deleteSong = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  await songServices.deleteSongIntoDB(id);
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "song deleted successfully",
     data: "",
   });
 });
@@ -409,4 +420,5 @@ export const songController = {
   favHandler,
   playListHandler,
   updateSong,
+  deleteSong,
 };

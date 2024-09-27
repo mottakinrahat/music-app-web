@@ -75,10 +75,16 @@ const updateSongIntoDB = async (id: string, payload: Partial<TSong>) => {
   return updatedData;
 };
 
+const deleteSongIntoDB = async (id: string) => {
+  const deletedSong = await Song.findByIdAndDelete(id);
+  return deletedSong;
+};
+
 export const songServices = {
   createSongIntoDB,
   getSongFromDB,
   getSingleSongFromDB,
   getSongsByCategoryFromDB,
   updateSongIntoDB,
+  deleteSongIntoDB,
 };
