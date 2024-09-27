@@ -19,8 +19,9 @@ const createSong = catchAsync(async (req, res) => {
     bpm,
     genre,
     category,
-    lyrics,
   } = req.body;
+
+  const lyrics = JSON.parse(req.body.lyrics);
 
   if (!req.file) {
     throw new AppError(httpStatus.NOT_FOUND, "file not found!");
