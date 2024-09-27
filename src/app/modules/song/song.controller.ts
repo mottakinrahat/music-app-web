@@ -389,6 +389,17 @@ const playListHandler = catchAsync(async (req, res) => {
   }
 });
 
+const updateSong = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  await songServices.updateSongIntoDB(req.body, id);
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "songUpdate successfully",
+    data: "",
+  });
+});
+
 export const songController = {
   createSong,
   getAllSong,
@@ -397,4 +408,5 @@ export const songController = {
   getDurationByLyrics,
   favHandler,
   playListHandler,
+  updateSong,
 };

@@ -10,5 +10,6 @@ router.get("/category/:id", songController.getSongsByCategory);
 router.get("/:id/:time", songController.getDurationByLyrics);
 router.put("/fav-list/:id/:userId", songController.favHandler);
 router.put("/play-list/:id/:userId", songController.playListHandler);
+router.put("/:id", songController.updateSong);
 // router.get("/download-audio/:fileId", songController.downLoadAudio);
 export const songRoutes = router;
