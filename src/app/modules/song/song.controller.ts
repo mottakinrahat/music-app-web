@@ -23,6 +23,16 @@ const createSong = catchAsync(async (req, res) => {
 
   const lyrics = JSON.parse(req.body.lyrics);
 
+  // Validate if lyrics is an array
+  if (!Array.isArray(lyrics)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid data format. Expected an array of lyrics.",
+    });
+  }
+
+  console.log(lyrics);
+
   if (!req.file) {
     throw new AppError(httpStatus.NOT_FOUND, "file not found!");
   }
