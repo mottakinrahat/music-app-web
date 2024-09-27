@@ -391,7 +391,7 @@ const playListHandler = catchAsync(async (req, res) => {
 
 const updateSong = catchAsync(async (req, res) => {
   const { id } = req.params;
-  await songServices.updateSongIntoDB(req.body, id);
+  await songServices.updateSongIntoDB(id, req.body);
   sendResponse(res, {
     success: true,
     statusCode: 200,
