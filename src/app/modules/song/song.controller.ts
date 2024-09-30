@@ -19,16 +19,15 @@ const createSong = catchAsync(async (req, res) => {
   }
 
   const slugify = (songName: string): string => {
-    return songName
+    const timestamp = Date.now();
+    const slug = songName
       .toLowerCase()
       .replace(/ /g, "-")
       .replace(/[^\w-]+/g, "");
+    return `${slug}-${timestamp}`;
   };
 
-  const songLink = await uploadToSpaces(
-    req.file.buffer,
-    `${slugify(songName)}-${Date.now()}`
-  );
+  const songLink = await uploadToSpaces(req.file.buffer, slugify(songName));
 
   const songData = {
     songName,
