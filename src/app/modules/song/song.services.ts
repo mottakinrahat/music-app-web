@@ -4,6 +4,7 @@ import { TSong } from "./song.interface";
 import { Song } from "./song.model";
 import { FilterQuery } from "mongoose";
 import { Album } from "../album/album.model";
+import { songReusable } from "./song.reusable";
 
 export interface ISong extends Document {
   songName: string;
@@ -49,13 +50,11 @@ const getSongFromDB = async (
 };
 
 const getSingleSongFromDB = async (id: string) => {
-  const result = await Song.findById(id)
-    .populate("songAlbum")
-    .populate("category");
-  if (!result) {
+  const existSong = await songReusable.songExist(id);
+  if (!existSong) {
     throw new AppError(httpStatus.NOT_FOUND, "song not found!");
   }
-  return result;
+  return existSong;
 };
 
 const getSongsByCategoryFromDB = async (id: string) => {
@@ -69,10 +68,23 @@ const getSongsByCategoryFromDB = async (id: string) => {
 };
 
 const updateSongIntoDB = async (id: string, payload: Partial<TSong>) => {
+  const existSong = await songReusable.songExist(id);
+  if (!existSong) {
+    throw new AppError(httpStatus.NOT_FOUND, "song not found!");
+  }
   const updatedData = await Song.findByIdAndUpdate(id, payload, {
     new: true,
   });
   return updatedData;
+};
+
+const deleteSongIntoDB = async (id: string) => {
+  const existSong = await songReusable.songExist(id);
+  if (!existSong) {
+    throw new AppError(httpStatus.NOT_FOUND, "song not found!");
+  }
+  const deletedSong = await Song.findByIdAndDelete(id);
+  return deletedSong;
 };
 
 export const songServices = {
@@ -81,4 +93,5 @@ export const songServices = {
   getSingleSongFromDB,
   getSongsByCategoryFromDB,
   updateSongIntoDB,
+  deleteSongIntoDB,
 };

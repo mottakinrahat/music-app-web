@@ -10,34 +10,31 @@ import { uploadToSpaces } from "../../middleware/fileUpload";
 import AppError from "../../utils/AppError";
 
 const createSong = catchAsync(async (req, res) => {
-  const {
-    songName,
-    songArtist,
-    songAlbum,
-    songDuration,
-    releaseYear,
-    bpm,
-    genre,
-    category,
-  } = req.body;
+  const { songName } = JSON.parse(req.body.data);
+
+  const bodyData = JSON.parse(req.body.data);
 
   if (!req.file) {
     throw new AppError(httpStatus.NOT_FOUND, "file not found!");
   }
 
-  const songLink = await uploadToSpaces(req.file.buffer, songName);
+  const slugify = (songName: string): string => {
+    const timestamp = Date.now(); // Get the current timestamp
+    return (
+      songName
+        .toLowerCase() // Convert to lowercase
+        .replace(/ /g, "-") // Replace spaces with hyphens
+        .replace(/[^\w-]+/g, "") + `-${timestamp}` // Remove non-alphanumeric characters and append timestamp
+    );
+  };
+
+  const songLink = await uploadToSpaces(req.file.buffer, slugify(songName));
 
   const songData = {
-    songName,
-    songArtist,
-    songAlbum,
-    songDuration,
-    releaseYear,
-    bpm,
-    genre,
-    category,
+    ...bodyData,
     songLink,
   };
+  // console.log(songData)
   const result = await songServices.createSongIntoDB(songData);
 
   sendResponse(res, {
@@ -379,6 +376,28 @@ const playListHandler = catchAsync(async (req, res) => {
   }
 });
 
+const updateSong = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  await songServices.updateSongIntoDB(id, req.body);
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "song Update successfully",
+    data: "",
+  });
+});
+
+const deleteSong = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  await songServices.deleteSongIntoDB(id);
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "song deleted successfully",
+    data: "",
+  });
+});
+
 export const songController = {
   createSong,
   getAllSong,
@@ -387,4 +406,6 @@ export const songController = {
   getDurationByLyrics,
   favHandler,
   playListHandler,
+  updateSong,
+  deleteSong,
 };

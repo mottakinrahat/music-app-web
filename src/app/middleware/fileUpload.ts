@@ -7,7 +7,7 @@ export const uploadToSpaces = async (
   file: Buffer,
   fileName: string
 ): Promise<string> => {
-  const uploadFileName = `${fileName}.mp3`
+  const uploadFileName = `${fileName}`;
   try {
     const s3 = new S3({
       endpoint: config.doSpacesEndPoint,
