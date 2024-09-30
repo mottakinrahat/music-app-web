@@ -27,7 +27,7 @@ const createSong = catchAsync(async (req, res) => {
 
   const songLink = await uploadToSpaces(
     req.file.buffer,
-    slugify(songName.Date.now())
+    `${slugify(songName)}-${Date.now()}`
   );
 
   const songData = {
