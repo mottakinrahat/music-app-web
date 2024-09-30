@@ -32,9 +32,9 @@ const createSong = catchAsync(async (req, res) => {
     songLink,
     bodyData,
   };
-  console.log(bodyData);
   console.log(songData);
   const result = await songServices.createSongIntoDB(songData);
+  console.log(result);
 
   sendResponse(res, {
     success: true,
