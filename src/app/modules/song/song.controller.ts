@@ -28,9 +28,17 @@ const createSong = catchAsync(async (req, res) => {
   const songLink = await uploadToSpaces(req.file.buffer, slugify(songName));
 
   const songData = {
-    songName,
     songLink,
-    bodyData,
+    songName: bodyData.songName,
+    songArtist: bodyData.songArtist,
+    songAlbum: bodyData.songAlbum,
+    songDuration: bodyData.songDuration,
+    releaseYear: bodyData.releaseYear,
+    bpm: bodyData.bpm,
+    genre: bodyData.genre,
+    subGenre: bodyData.subGenre,
+    category: bodyData.category,
+    lyrics: bodyData.lyrics,
   };
   console.log(songData);
   const result = await songServices.createSongIntoDB(songData);
