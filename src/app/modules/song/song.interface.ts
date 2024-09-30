@@ -1,10 +1,10 @@
 import { ObjectId } from "mongoose";
 
-// interface Lyric {
-//   startTime: string;
-//   endTime: string;
-//   line: string;
-// }
+interface Lyric {
+  startTime: string;
+  endTime: string;
+  line: string;
+}
 
 export interface TSong {
   songName: string;
@@ -17,8 +17,7 @@ export interface TSong {
   genre: string;
   bpm: number;
   category: ObjectId;
-  // lyrics: Lyric[];
-  lyrics: string;
+  lyrics: Lyric[];
   favUsers: ObjectId;
   playListUsers: ObjectId;
   album: ObjectId;
