@@ -19,10 +19,13 @@ const createSong = catchAsync(async (req, res) => {
   }
 
   const slugify = (songName: string): string => {
-    return songName
-      .toLowerCase() // Convert to lowercase
-      .replace(/ /g, "-") // Replace spaces with hyphens
-      .replace(/[^\w-]+/g, ""); // Remove any non-alphanumeric characters except hyphens
+    const timestamp = Date.now(); // Get the current timestamp
+    return (
+      songName
+        .toLowerCase() // Convert to lowercase
+        .replace(/ /g, "-") // Replace spaces with hyphens
+        .replace(/[^\w-]+/g, "") + `-${timestamp}` // Remove non-alphanumeric characters and append timestamp
+    );
   };
 
   const songLink = await uploadToSpaces(req.file.buffer, slugify(songName));
