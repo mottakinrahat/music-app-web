@@ -10,18 +10,9 @@ import { uploadToSpaces } from "../../middleware/fileUpload";
 import AppError from "../../utils/AppError";
 
 const createSong = catchAsync(async (req, res) => {
-  const {
-    songName,
-    songArtist,
-    songAlbum,
-    songDuration,
-    releaseYear,
-    bpm,
-    genre,
-    category,
-    lyrics,
-    subGenre,
-  } = JSON.parse(req.body.data);
+  const { songName } = JSON.parse(req.body.data);
+
+  const bodyData = JSON.parse(req.body.data);
 
   if (!req.file) {
     throw new AppError(httpStatus.NOT_FOUND, "file not found!");
@@ -29,25 +20,20 @@ const createSong = catchAsync(async (req, res) => {
 
   const slugify = (songName: string): string => {
     return songName
-      .toLowerCase() // Convert to lowercase
-      .replace(/ /g, "-") // Replace spaces with hyphens
-      .replace(/[^\w-]+/g, ""); // Remove any non-alphanumeric characters except hyphens
+      .toLowerCase()
+      .replace(/ /g, "-")
+      .replace(/[^\w-]+/g, "");
   };
 
-  const songLink = await uploadToSpaces(req.file.buffer, slugify(songName));
+  const songLink = await uploadToSpaces(
+    req.file.buffer,
+    slugify(songName.Date.now())
+  );
 
   const songData = {
     songName,
-    songArtist,
-    songAlbum,
-    songDuration,
-    releaseYear,
-    bpm,
-    genre,
-    subGenre,
-    category,
     songLink,
-    lyrics,
+    bodyData,
   };
   const result = await songServices.createSongIntoDB(songData);
 
